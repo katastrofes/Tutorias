@@ -21,8 +21,7 @@ import { CalenderComponent } from './pages/calender/calender.component';
 import { ReporteTutoresComponent } from './pages/reporte-tutores/reporte-tutores.component';
 import { ReporteEstudiantesComponent } from './pages/reporte-estudiantes/reporte-estudiantes.component';
 import { GestionTutoriasComponent } from './pages/gestion-tutorias/gestion-tutorias.component';
-import { GestionTutoresTutoriasComponent } from './pages/gestion-tutores-tutorias/gestion-tutores-tutorias.component';
-import { GestionCarrerasTutoriasComponent } from './pages/gestion-carreras-tutorias/gestion-carreras-tutorias.component';
+import { GestionSesionesComponent } from './pages/gestion-sesiones/gestion-sesiones.component';
 
 export const routes: Routes = [
   {
@@ -39,12 +38,8 @@ export const routes: Routes = [
         component: GestionTutoriasComponent,
       },
       {
-        path:'gestion-tutores-tutorias',
-        component: GestionTutoresTutoriasComponent,
-      },
-      {
-        path:'gestion-carreras-tutorias',
-        component: GestionCarrerasTutoriasComponent,
+        path:'gestion-sesiones',
+        component: GestionSesionesComponent,
       },
       {
         path:'reporte-tutores',
