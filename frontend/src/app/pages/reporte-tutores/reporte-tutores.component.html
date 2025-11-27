@@ -1,0 +1,20 @@
+<app-page-breadcrumb pageTitle="Reporte Tutores" />
+<div class="p-4 rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+  <div>
+    <div class="p-4 sm:p-6">
+    <div class="space-y-6">
+      <ng-content>      <div>
+      <app-label>Periodo</app-label>
+      <app-select
+        [options]="options"
+        placeholder="Selecciona un periodo"
+        [value]="selectedValue"
+        (valueChange)="handleSelectChange($event)"
+        className="dark:bg-dark-900"
+      ></app-select>
+    </div>
+      <app-basic-table-one/></ng-content>
+    </div>
+  </div>
+  </div>
+</div>
