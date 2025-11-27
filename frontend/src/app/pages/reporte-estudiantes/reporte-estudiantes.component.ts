@@ -7,14 +7,11 @@ import { SelectComponent } from '../../shared/components/form/select/select.comp
 import { CommonModule } from '@angular/common';
 import { BadgeComponent } from '../../shared/components/ui/badge/badge.component';
 
-
 @Component({
-  selector: 'app-reporte-tutores',
-  templateUrl: './reporte-tutores.component.html',
+  selector: 'app-reporte-estudiantes',
+  templateUrl: './reporte-estudiantes.component.html',
   imports: [
-      //ComponentCardComponent,
       PageBreadcrumbComponent,
-      //BasicTableOneComponent,
       LabelComponent,
       SelectComponent,
       CommonModule,
@@ -22,7 +19,7 @@ import { BadgeComponent } from '../../shared/components/ui/badge/badge.component
   ],
   styles: ``
 })
-export class ReporteTutoresComponent implements OnInit {
+export class ReporteEstudiantesComponent implements OnInit {
   options = [
     { value: '60', label: '2025 Semestre 2' }
   ];
