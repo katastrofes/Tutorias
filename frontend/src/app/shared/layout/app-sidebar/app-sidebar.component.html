@@ -31,7 +31,7 @@
             }"
           >
             @if ((isExpanded$ | async) || (isHovered$ | async) || (isMobileOpen$ | async)) 
-            { Menu } 
+            { Gestión} 
            @else {
             <svg
               width="1em"
@@ -219,7 +219,7 @@
         <!-- end support section -->
 
         <!-- Others Section -->
-        <div>
+     <div>
           <h2
             class="mb-4 text-xs uppercase flex leading-[20px] text-gray-400"
             [ngClass]="{
@@ -234,7 +234,7 @@
                 (isHovered$ | async) ||
                 (isMobileOpen$ | async)
             ) {
-              Others
+              Consultas e informes
             } @else {
               <svg
                 width="1em"
@@ -254,7 +254,7 @@
             }
           </h2>
 
-          <ul class="flex flex-col gap-1">
+         <ul class="flex flex-col gap-1">
             @for (nav of othersItems; track $index;let i = $index) {
             <li>
               @if (nav.subItems) {
@@ -418,6 +418,7 @@
             </li>
             }
           </ul>
+        
         </div>
         <!-- end other section -->
       </div>

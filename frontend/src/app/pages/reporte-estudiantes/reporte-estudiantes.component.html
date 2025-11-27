@@ -6,12 +6,24 @@
       <ng-content>      <div>
       <app-label>Periodo</app-label>
       <app-select
-        [options]="options"
+        [options]="optionsPeriodo"
         placeholder="Selecciona un periodo"
-        [value]="selectedValue"
-        (valueChange)="handleSelectChange($event)"
+        [value]="selectedValuePeriodo"
+        (valueChange)="handleSelectChangePeriodo($event)"
         className="dark:bg-dark-900"
       ></app-select>
+
+      <div class="space-y-6 py-4">
+      <ng-content>      <div>
+      <app-label>Carrera</app-label>
+      <app-select
+        [options]="optionsCarrera"
+        placeholder="Selecciona una carrera"
+        [value]="selectedValueCarrera"
+        (valueChange)="handleSelectChangeCarrera($event)"
+        className="dark:bg-dark-900"
+      ></app-select>
+      
 </div>
 <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
   <div class="max-w-full overflow-x-auto">
@@ -19,65 +31,43 @@
       <!-- Table Header -->
       <thead class="border-b border-gray-100 dark:border-white/[0.05]">
         <tr>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">User</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Project Name</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Team</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Status</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Budget</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Tutorias</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Rut</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Tutorado</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Carrera</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Año ingreso</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Asistencia</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Sesiones</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Correo</th>
         </tr>
       </thead>
       <!-- Table Body -->
       <tbody class="divide-y divide-gray-100 dark:divide-white/[0.05]">
         @for (order of tableData; track $index) {
         <tr>
-          <td class="px-5 py-4 sm:px-6 text-start">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 overflow-hidden rounded-full">
-                <img
-                  width="40"
-                  height="40"
-                  [src]="order.user.image"
-                  [alt]="order.user.name"
-                />
-              </div>
-              <div>
-                <span class="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                  {{ order.user.name }}
-                </span>
-                <span class="block text-gray-500 text-theme-xs dark:text-gray-400">
-                  {{ order.user.role }}
-                </span>
-              </div>
-            </div>
+          <td class="px-5 py-4 sm:px-6 text-start text-gray-500 text-theme-sm dark:text-gray-400">
+              {{ order.tutorias }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.projectName }}
+            {{ order.user.rut }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            <div class="flex -space-x-2">
-              @for (teamImage of order.team.images; track $index; let i = $index) {
-              <div class="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900">
-                <img
-                  width="24"
-                  height="24"
-                  [src]="teamImage"
-                  [alt]="'Team member ' + (i + 1)"
-                  class="w-full size-6"
-                />
-              </div>
-              }
-            </div>
+            {{ order.tutorado }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            <app-badge
-              size="sm"
-              [color]="getBadgeColor(order.status)"
-            >
-              {{ order.status }}
-            </app-badge>
+            {{ order.user.carrera }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-            {{ order.budget }}
+            {{ order.user.yearOfEntry }}
+          </td>
+          <td class="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+            {{ order.user.asistencia }}
+          </td>
+          <td class="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+            {{ order.sessions }}
+          </td>
+          <td class="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+            {{ order.user.email }}
           </td>
         </tr>
         }

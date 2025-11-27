@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ComponentCardComponent } from '../../shared/components/common/component-card/component-card.component';
 import { PageBreadcrumbComponent } from '../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
-import { BasicTableOneComponent } from '../../shared/components/tables/basic-tables/basic-table-one/basic-table-one.component';
 import { LabelComponent } from '../../shared/components/form/label/label.component';
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { CommonModule } from '@angular/common';
-import { BadgeComponent } from '../../shared/components/ui/badge/badge.component';
 
 @Component({
   selector: 'app-reporte-estudiantes',
@@ -15,113 +12,116 @@ import { BadgeComponent } from '../../shared/components/ui/badge/badge.component
       LabelComponent,
       SelectComponent,
       CommonModule,
-      BadgeComponent,
   ],
   styles: ``
 })
 export class ReporteEstudiantesComponent implements OnInit {
-  options = [
+  optionsPeriodo = [
     { value: '60', label: '2025 Semestre 2' }
   ];
-    tableData = [
+  
+  optionsCarrera = [
+    { value: '1', label: 'Ingeniería Civil Industrial' }
+  ];
+  tableData = [
     {
       id: 1,
       user: {
-        image: '/images/user/user-17.jpg',
-        name: 'Lindsey Curtis',
-        role: 'Web Designer',
+        name: 'González Tapia, Francisco Javier',
+        rut: '12345678-9',
+        carrera: 'Ingeniería Civil Industrial',
+        role: 'Tutor',
+        yearOfEntry: '2025',
+        asistencia: '8',
+        email: 'francisco.gonzalez@example.com',
       },
-      projectName: 'Agency Website',
-      team: {
-        images: [
-          '/images/user/user-22.jpg',
-          '/images/user/user-23.jpg',
-          '/images/user/user-24.jpg',
-        ],
-      },
-      budget: '3.9K',
-      status: 'Active',
+      tutorias: 'Ing. C. Computación / 523',
+      tutorado: 'Juan Pérez',
+      facultad: 'Facultad de Ingeniería',
+      sessions: 10,
     },
     {
       id: 2,
       user: {
-        image: '/images/user/user-18.jpg',
-        name: 'Kaiya George',
-        role: 'Project Manager',
+        name: 'Fernández García, José Luis',
+        rut: '98765432-1',
+        carrera: 'Ingeniería Comercial',
+        role: 'Tutor',
+        yearOfEntry: '2025',
+        asistencia: '7',
+        email: 'jose.fernandez@example.com',
       },
-      projectName: 'Technology',
-      team: {
-        images: ['/images/user/user-25.jpg', '/images/user/user-26.jpg'],
-      },
-      budget: '24.9K',
-      status: 'Pending',
+      tutorias: 'Ing. C. Comercial / 537',
+      tutorado: 'Ana López',
+      facultad: 'Facultad de Ciencias Económicas',
+      sessions: 8,
     },
     {
       id: 3,
       user: {
-        image: '/images/user/user-17.jpg',
-        name: 'Zain Geidt',
-        role: 'Content Writing',
+        name: 'Morales Ruiz, Carmen Beatriz',
+        rut: '23456789-0',
+        carrera: 'Ingeniería en Computación',
+        role: 'Tutor',
+        yearOfEntry: '2025',
+        asistencia: '12',
+        email: 'carmen.morales@example.com',
       },
-      projectName: 'Blog Writing',
-      team: {
-        images: ['/images/user/user-27.jpg'],
-      },
-      budget: '12.7K',
-      status: 'Active',
+      tutorias: 'Ing. C. Computación / 523',
+      tutorado: 'Luis García',
+      facultad: 'Facultad de Ciencias de la Computación',
+      sessions: 12,
     },
     {
       id: 4,
       user: {
-        image: '/images/user/user-20.jpg',
-        name: 'Abram Schleifer',
-        role: 'Digital Marketer',
+        name: 'Hernández Gómez, Carolina Pilar',
+        rut: '87654321-0',
+        carrera: 'Ingeniería Civil Mecánica',
+        role: 'Tutor',
+        yearOfEntry: '2025',
+        asistencia: '10',
+        email: 'carolina.hernandez@example.com',
       },
-      projectName: 'Social Media',
-      team: {
-        images: [
-          '/images/user/user-28.jpg',
-          '/images/user/user-29.jpg',
-          '/images/user/user-30.jpg',
-        ],
-      },
-      budget: '2.8K',
-      status: 'Cancel',
+      tutorias: 'Ing. C. Mecánica / 518',
+      tutorado: 'Carlos Sánchez',
+      facultad: 'Facultad de Ingeniería',
+      sessions: 15,
     },
     {
       id: 5,
       user: {
-        image: '/images/user/user-21.jpg',
-        name: 'Carla George',
-        role: 'Front-end Developer',
+        name: 'Sánchez Fernández, Pedro Pablo',
+        rut: '34567890-1',
+        carrera: 'Ingeniería Electrónica',
+        role: 'Tutor',
+        yearOfEntry: '2025',
+        asistencia: '7',
+        email: 'pedro.sanchez@example.com',
       },
-      projectName: 'Website',
-      team: {
-        images: [
-          '/images/user/user-31.jpg',
-          '/images/user/user-32.jpg',
-          '/images/user/user-33.jpg',
-        ],
-      },
-      budget: '4.5K',
-      status: 'Active',
+      tutorias: 'Ing. C. Electrónica / 510',
+      tutorado: 'Pedro Morales',
+      facultad: 'Facultad de Ingeniería',
+      sessions: 7,
     },
   ];
 
-  selectedValue = '';
+
+
+  selectedValuePeriodo = '';
+  selectedValueCarrera = '';
   constructor() { }
 
   ngOnInit() {
   }
 
-  handleSelectChange(value: string) {
-    this.selectedValue = value;
-    console.log('Selected value:', value);
+  handleSelectChangePeriodo(valuePeriodo: string) {
+    this.selectedValuePeriodo = valuePeriodo;
+    console.log('Selected value:', valuePeriodo);
   }
 
-  getBadgeColor(status: string): 'success' | 'warning' | 'error' {
-    if (status === 'Active') return 'success';
-    if (status === 'Pending') return 'warning';
-    return 'error';
+  handleSelectChangeCarrera(valueCarrera: string) {
+    this.selectedValueCarrera = valueCarrera;
+    console.log('Selected value:', valueCarrera);
   }
 }
