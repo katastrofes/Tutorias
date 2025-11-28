@@ -30,7 +30,7 @@ export const routes: Routes = [
     children:[
       {
         path: '',
-        component: EcommerceComponent,
+        component: GestionTutoriasComponent,
         pathMatch: 'full',
       },
       {
