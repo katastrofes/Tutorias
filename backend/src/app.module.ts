@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TutoriaModule } from './tutoria/tutoria.module';
+import { CarreraModule } from './carrera/carrera.module';
+import { PersonaModule } from './persona/persona.module';
 
 @Module({
   imports: [
@@ -17,12 +19,17 @@ import { TutoriaModule } from './tutoria/tutoria.module';
         username: config.get<string>('DB_USERNAME', 'postgres'),
         password: config.get<string>('DB_PASSWORD', 'postgres'),
         database: config.get<string>('DB_NAME', 'tutorias_db'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'], 
         autoLoadEntities: true,
         synchronize: true, // Desactivar en producción
       }),
     }),
 
     TutoriaModule,
+
+    CarreraModule,
+
+    PersonaModule,
   ],
 })
 export class AppModule {}

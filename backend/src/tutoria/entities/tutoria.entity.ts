@@ -6,8 +6,8 @@ import {
   JoinTable,
 } from 'typeorm';
 import { Periodo } from './periodo.entity';
-import { Carrera } from './carrera.entity';
-import { Persona } from './persona.entity';
+import { Carrera } from '../../carrera/entities/carrera.entity';
+import { Persona } from '../../persona/persona.entity';
 
 @Entity()
 export class Tutoria {

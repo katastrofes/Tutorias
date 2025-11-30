@@ -1,11 +1,20 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
-import { TutoriaService } from './tutoria.service';
+
 import { CreateTutoriaDto } from './dto/create-tutoria.dto';
 import { UpdateTutoriaDto } from './dto/update-tutoria.dto';
+import { TutoriaService } from './tutoria.service';
 
 @Controller('tutoria')
 export class TutoriaController {
   constructor(private readonly service: TutoriaService) {}
+
+  @Get('periodo')
+    getByPeriodo(
+      @Query('semestre') semestre: number,
+      @Query('año') año: number
+    ) {
+      return this.service.findByPeriodo(semestre, año);
+  }
 
   @Get()
   findByPeriodo(@Query('semestre') semestre: number, @Query('año') año: number) {
@@ -26,4 +35,5 @@ export class TutoriaController {
   remove(@Param('id') id: number) {
     return this.service.remove(id);
   }
+  
 }

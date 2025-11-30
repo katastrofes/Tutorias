@@ -3,12 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TutoriaService } from './tutoria.service';
 import { TutoriaController } from './tutoria.controller';
 import { Tutoria } from './entities/tutoria.entity';
-import { Carrera } from './entities/carrera.entity';
-import { Persona } from './entities/persona.entity';
+import { Carrera } from '../carrera/entities/carrera.entity';
+import { Persona } from '../persona/persona.entity';
 import { Periodo } from './entities/periodo.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Tutoria, Carrera, Persona, Periodo])],
+  imports: [
+    TypeOrmModule.forFeature([Tutoria, Carrera, Persona, Periodo]),
+  ],
   controllers: [TutoriaController],
   providers: [TutoriaService],
 })

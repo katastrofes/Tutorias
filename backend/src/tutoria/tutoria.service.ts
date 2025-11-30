@@ -8,9 +8,10 @@ import { Repository } from 'typeorm';
 import { Tutoria } from './entities/tutoria.entity';
 import { CreateTutoriaDto } from './dto/create-tutoria.dto';
 import { UpdateTutoriaDto } from './dto/update-tutoria.dto';
-import { Carrera } from './entities/carrera.entity';
-import { Persona } from './entities/persona.entity';
+import { Carrera } from 'src/carrera/entities/carrera.entity';
+import { Persona } from 'src/persona/entities/persona.entity'; 
 import { Periodo } from './entities/periodo.entity';
+
 
 @Injectable()
 export class TutoriaService {
@@ -81,4 +82,6 @@ export class TutoriaService {
     if (!tutoria) throw new NotFoundException('Tutoria no encontrada');
     return this.tutoriaRepo.remove(tutoria);
   }
+
+  
 }
