@@ -95,3 +95,10 @@
     </table>
   </div>
 </div>
+<app-agregar-tutoria-modal
+  [visible]="mostrarModal"
+  [carrerasDisponibles]="carreras"
+  [tutoresDisponibles]="tutores"
+  (save)="guardarTutoria($event)"
+  (close)="mostrarModal = false">
+</app-agregar-tutoria-modal>

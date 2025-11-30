@@ -4,7 +4,12 @@ import { LabelComponent } from '../../shared/components/form/label/label.compone
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
-
+import { FormsModule } from '@angular/forms';
+import { AgregarTutoriaModalComponent } from './agregar-tutoria-modal/agregar-tutoria-modal.component';
+import { Carrera } from '../../shared/models/carrera';
+import { Persona } from '../../shared/models/persona';
+import { TutoriaService } from '../../shared/services/tutoria.service';
+import { HttpClientModule } from '@angular/common/http';
 
 interface TableData {
   id: number;
@@ -12,72 +17,99 @@ interface TableData {
   n_tutores: number;
   fecha_creacion: string;
 }
+
 @Component({
   selector: 'app-gestion-tutorias',
+  standalone: true,
   templateUrl: './gestion-tutorias.component.html',
   imports: [
-      PageBreadcrumbComponent,
-      LabelComponent,
-      SelectComponent,
-      CommonModule,
-      ButtonComponent,
+    HttpClientModule,
+    PageBreadcrumbComponent,
+    LabelComponent,
+    SelectComponent,
+    CommonModule,
+    ButtonComponent,
+    FormsModule,
+    AgregarTutoriaModalComponent, // 👈 Importa el componente modal,
   ],
   styles: ``
 })
 export class GestionTutoriasComponent implements OnInit {
-
-  //obtener opciones de periodos
   options = [
     { value: '60', label: '2025 Semestre 2' }
   ];
 
+  selectedValue = '';
   tableData: TableData[] = [];
 
+  mostrarModal = false;
 
-  selectedValue = '';
-  constructor() { }
+  carreras: Carrera[] = [];
+  tutores: Persona[] = [];
+
+  constructor(private tutoriaService: TutoriaService) {}
 
   ngOnInit() {
+    this.cargarCarrerasYTutores();
   }
 
-  //agregar logica para cargar tutorias segun periodo
-  cargarTutorias(periodo: string) {
-    console.log("Cargando tutorías del periodo:", periodo);
+  cargarCarrerasYTutores() {
+    this.tutoriaService.getCarreras().subscribe((data) => {
+      this.carreras = data;
+    });
 
-    this.tableData = [
-      {
-        id: 2,
-        carreras: 'Ingeniería Comercial',
-        n_tutores: 7,
-        fecha_creacion: '2025-02-05',
-      },
-      {
-        id: 3,
-        carreras: 'Ingeniería en Computación',
-        n_tutores: 12,
-        fecha_creacion: '2025-02-06',
-      }
-    ];
+    this.tutoriaService.getPersonas().subscribe((data) => {
+      this.tutores = data;
+    });
+  }
+
+  cargarTutorias(periodoId: string) {
+
+    const periodo = this.options.find(o => o.value === periodoId);
+    if (!periodo) return;
+
+    // Simulemos que tienes semestre y año en el label
+    const [anio, semestreRaw] = periodo.label.split(' ');
+    const semestre = semestreRaw === 'Semestre' ? 1 : 2;
+
+    this.tutoriaService.getTutoriasPorPeriodo(semestre, parseInt(anio)).subscribe(data => {
+      this.tableData = data.map(tutoria => ({
+        id: tutoria.id,
+        carreras: tutoria.carreras.map((c: any) => c.nombre).join(', '),
+        n_tutores: tutoria.tutores?.length ?? 0,
+        fecha_creacion: new Date(tutoria.fecha_creacion).toISOString().split('T')[0],
+      }));
+    });
   }
 
   handleSelectChange(value: string) {
     this.selectedValue = value;
-    console.log('Selected value:', value);
     this.cargarTutorias(value);
-    
   }
 
-  //agregar logica para agregar tutoria
   agregarTutoria() {
-    console.log('Agregar nueva tutoría');
+    this.mostrarModal = true;
   }
 
-  //agregar logica para editar tutoria
-  editarTutoria(item: TableData) {
-  console.log('Editar:', item);
+  guardarTutoria(data: { carreraIds: number[], tutorIds?: number[] }) {
+    console.log('Guardar tutoría con datos:', data);
+
+    const payload = {
+      periodoId: parseInt(this.selectedValue),
+      carreraIds: data.carreraIds,
+      tutorIds: data.tutorIds,
+    };
+
+    this.tutoriaService.createTutoria(payload).subscribe(() => {
+      this.mostrarModal = false;
+      this.cargarTutorias(this.selectedValue);
+    });
   }
-  
-  //agregar logica para eliminar tutoria
+
+  editarTutoria(item: TableData) {
+    console.log('Editar:', item);
+  }
+
   eliminarTutoria(item: TableData) {
     console.log('Eliminar:', item);
   }

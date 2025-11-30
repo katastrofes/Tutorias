@@ -1,0 +1,30 @@
+<div class="modal-container">
+  <h2>Agregar Tutoría</h2>
+
+  <div class="form-group">
+    <label for="carrera">Carreras</label>
+    <div class="select-row">
+      <select [(ngModel)]="carreraSeleccionada">
+        <option [ngValue]="null" disabled selected>Selecciona una carrera</option>
+        <option *ngFor="let c of carrerasDisponibles" [ngValue]="c">{{ c.nombre }}</option>
+      </select>
+      <button (click)="agregarCarrera()" class="small-button">Agregar Carrera</button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="tutor">Tutores</label>
+    <div class="select-row">
+      <select [(ngModel)]="tutorSeleccionado">
+        <option [ngValue]="null" disabled selected>Selecciona un tutor</option>
+        <option *ngFor="let t of tutoresDisponibles" [ngValue]="t">{{ t.nombre }}</option>
+      </select>
+      <button (click)="agregarTutor()" class="small-button">Agregar Tutor</button>
+    </div>
+  </div>
+
+  <div class="button-row">
+    <button class="primary-button" (click)="crearTutoria()">Crear Tutoría</button>
+    <button class="cancel-button" (click)="cancelar()">Cancelar</button>
+  </div>
+</div>
