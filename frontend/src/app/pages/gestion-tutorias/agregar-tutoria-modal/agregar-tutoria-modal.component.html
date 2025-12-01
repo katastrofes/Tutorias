@@ -108,7 +108,9 @@
 
     <!-- ================= FOOTER ================= -->
     <div class="button-row">
-      <button class="primary-button" (click)="guardar()">Crear Tutoría</button>
+      <button class="primary-button" (click)="guardar()">
+        {{ tutoriasEditar ? 'Guardar cambios' : 'Crear Tutoría' }}
+      </button>
       <button class="cancel-button" (click)="cerrar()">Cancelar</button>
     </div>
 
