@@ -13,10 +13,18 @@ import { HttpClientModule } from '@angular/common/http';
 
 interface TableData {
   id: number;
+  carreraIds: number[];
   carreras: string;
   n_tutores: number;
   fecha_creacion: string;
-  tutorIds?: number[]; // NUEVO: para guardar tutores seleccionados
+  tutorIds?: number[];
+}
+
+interface PeriodoOption {
+  value: string;
+  label: string;
+  semestre: number;
+  año: number;
 }
 
 @Component({
@@ -36,28 +44,12 @@ interface TableData {
   styles: ``
 })
 export class GestionTutoriasComponent implements OnInit {
-  options = [
-    { value: '60', label: '2025 Semestre 2' }
-  ];
-
+  options: PeriodoOption[] = [];
   selectedValue = '';
   tableData: TableData[] = [];
-
   mostrarModal = false;
-
-  carreras: Carrera[] = [
-    { id: 1, nombre: 'Ingeniería Informática' },
-    { id: 2, nombre: 'Ingeniería Civil' },
-    { id: 3, nombre: 'Administración de Empresas' },
-  ];
-
-  tutores: Persona[] = [
-    { per_id: 101, rut: '11.111.111-1', nombre: 'Juan Pérez' },
-    { per_id: 102, rut: '11.111.111-1', nombre: 'María López' },
-    { per_id: 103, rut: '11.111.111-1', nombre: 'Carlos Ruiz' },
-  ];
-
-  // Datos temporales para edición
+  carreras: Carrera[] = [];
+  tutores: Persona[] = [];
   tutoriasEditar?: {
     rowId: number;
     carreraIds: number[];
@@ -68,15 +60,37 @@ export class GestionTutoriasComponent implements OnInit {
 
   ngOnInit() {
     this.cargarCarrerasYTutores();
+    this.cargarPeriodos();
+  }
+
+  cargarPeriodos() {
+    this.tutoriaService.getPeriodos().subscribe({
+      next: (data: any[]) => {
+        this.options = data.map(p => ({
+          value: p.peri_id.toString(),
+          label: `${p.año} Semestre ${p.semestre}`,
+          semestre: p.semestre,
+          año: p.año
+        }));
+
+        if (this.options.length > 0) {
+          this.selectedValue = this.options[0].value;
+          this.cargarTutorias(this.selectedValue);
+        }
+      },
+      error: (err) => console.error('Error cargando periodos:', err)
+    });
   }
 
   cargarCarrerasYTutores() {
-    this.tutoriaService.getCarreras().subscribe((data) => {
-      this.carreras = data;
+    this.tutoriaService.getCarreras().subscribe({
+      next: (data) => this.carreras = data,
+      error: (err) => console.error('Error cargando carreras:', err)
     });
 
-    this.tutoriaService.getPersonas().subscribe((data) => {
-      this.tutores = data;
+    this.tutoriaService.getPersonas().subscribe({
+      next: (data) => this.tutores = data,
+      error: (err) => console.error('Error cargando tutores:', err)
     });
   }
 
@@ -84,17 +98,20 @@ export class GestionTutoriasComponent implements OnInit {
     const periodo = this.options.find(o => o.value === periodoId);
     if (!periodo) return;
 
-    const [anio, semestreRaw] = periodo.label.split(' ');
-    const semestre = semestreRaw === 'Semestre' ? 1 : 2;
+    const { semestre, año } = periodo;
 
-    this.tutoriaService.getTutoriasPorPeriodo(semestre, parseInt(anio)).subscribe(data => {
-      this.tableData = data.map(tutoria => ({
-        id: tutoria.id,
-        carreras: tutoria.carreras.map((c: any) => c.nombre).join(', '),
-        n_tutores: tutoria.tutores?.length ?? 0,
-        tutorIds: tutoria.tutores?.map((t: any) => t.per_id) ?? [],
-        fecha_creacion: new Date(tutoria.fecha_creacion).toISOString().split('T')[0],
-      }));
+    this.tutoriaService.getTutoriasPorPeriodo(semestre, año).subscribe({
+      next: (data: any[]) => {
+        this.tableData = data.map(tutoria => ({
+          id: tutoria.id,
+          carreraIds: tutoria.carreras.map((c: any) => c.id),
+          carreras: tutoria.carreras.map((c: any) => c.nombre).join(', '),
+          n_tutores: tutoria.tutores?.length ?? 0,
+          tutorIds: tutoria.tutores?.map((t: any) => t.per_id) ?? [],
+          fecha_creacion: new Date(tutoria.fecha_creacion).toISOString().split('T')[0],
+        }));
+      },
+      error: (err) => console.error('Error cargando tutorías:', err)
     });
   }
 
@@ -103,44 +120,51 @@ export class GestionTutoriasComponent implements OnInit {
     this.cargarTutorias(value);
   }
 
-  // ------------------- MODAL -------------------
   agregarTutoria() {
-    this.tutoriasEditar = undefined; // limpiar edición
+    this.tutoriasEditar = undefined;
     this.mostrarModal = true;
   }
 
-  guardarTutoria(data: { rowId?: number, carreraIds: number[], tutorIds?: number[] }) {
-    const carrerasSeleccionadas = this.carreras
-      .filter(c => data.carreraIds.includes(c.id))
-      .map(c => c.nombre)
-      .join(', ');
-
-    const nTutores = data.tutorIds?.length ?? 0;
-    const fechaCreacion = new Date().toISOString().split('T')[0];
+  guardarTutoria(data: { rowId?: number; carreraIds: number[]; tutorIds?: number[] }) {
+    const periodoId = parseInt(this.selectedValue);
 
     if (data.rowId) {
-      // EDITAR fila existente
-      const index = this.tableData.findIndex(t => t.id === data.rowId);
-      if (index > -1) {
-        this.tableData[index] = {
-          ...this.tableData[index],
-          carreras: carrerasSeleccionadas,
-          n_tutores: nTutores,
-          tutorIds: data.tutorIds,
-          fecha_creacion: fechaCreacion
-        };
-      }
+      this.tutoriaService.updateTutoria(data.rowId, {
+        carreraIds: data.carreraIds,
+        tutorIds: data.tutorIds
+      }).subscribe({
+        next: (res: any) => {
+          const index = this.tableData.findIndex(t => t.id === data.rowId);
+          if (index > -1) {
+            this.tableData[index] = {
+              id: res.id,
+              carreras: res.carreras.map((c: any) => c.nombre).join(', '),
+              carreraIds: res.carreras.map((c: any) => c.id),
+              n_tutores: res.tutores?.length ?? 0,
+              tutorIds: res.tutores?.map((t: any) => t.per_id) ?? [],
+              fecha_creacion: new Date(res.createdAt || Date.now()).toISOString().split('T')[0],
+            };
+          }
+        },
+        error: (err) => console.error('Error actualizando tutoria:', err)
+      });
     } else {
-      // NUEVA fila
-      const nuevoId = this.tableData.length > 0
-        ? Math.max(...this.tableData.map(t => t.id)) + 1
-        : 1;
-      this.tableData.push({
-        id: nuevoId,
-        carreras: carrerasSeleccionadas,
-        n_tutores: nTutores,
-        tutorIds: data.tutorIds,
-        fecha_creacion: fechaCreacion
+      this.tutoriaService.createTutoria({
+        periodoId,
+        carreraIds: data.carreraIds,
+        tutorIds: data.tutorIds
+      }).subscribe({
+        next: (res: any) => {
+          this.tableData.push({
+            id: res.id,
+            carreras: res.carreras.map((c: any) => c.nombre).join(', '),
+            carreraIds: res.carreras.map((c: any) => c.id),
+            n_tutores: res.tutores?.length ?? 0,
+            tutorIds: res.tutores?.map((t: any) => t.per_id) ?? [],
+            fecha_creacion: new Date(res.createdAt || Date.now()).toISOString().split('T')[0],
+          });
+        },
+        error: (err) => console.error('Error creando tutoria:', err)
       });
     }
 
@@ -165,6 +189,11 @@ export class GestionTutoriasComponent implements OnInit {
   }
 
   eliminarTutoria(item: TableData) {
-    this.tableData = this.tableData.filter(t => t.id !== item.id);
+    this.tutoriaService.removeTutoria(item.id).subscribe({
+      next: () => {
+        this.tableData = this.tableData.filter(t => t.id !== item.id);
+      },
+      error: (err) => console.error('Error eliminando tutoria:', err)
+    });
   }
 }

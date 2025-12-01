@@ -1,32 +1,34 @@
 <div *ngIf="visible" class="modal-overlay">
   <div class="modal-container">
 
-    <!-- ================= HEADER ================= -->
     <div class="modal-header">
       <h2>Agregar Tutoría</h2>
     </div>
 
-    <!-- ================= CARRERAS ================= -->
+    <!-- --------------------- CARRERAS --------------------- -->
     <div class="section">
       <div class="section-bar">Carreras</div>
 
-      <div class="section-row">
-        <select id="carrera" [(ngModel)]="carreraSeleccionada">
-          <option [ngValue]="null" disabled selected>Selecciona una carrera</option>
-          <option *ngFor="let c of carrerasDisponibles" [ngValue]="c.id">
-            {{ c.nombre }}
-          </option>
-        </select>
+      <div class="section-row" style="position: relative;">
+        <input
+          type="text"
+          placeholder="Buscar carrera..."
+          [(ngModel)]="carreraBusqueda"
+          (input)="filtrarCarreras()"
+          class="search-input"
+        />
 
-        <button class="icon-button" (click)="agregarCarrera()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">
-            <path fill="#10b981"
-              d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z" />
-          </svg>
-        </button>
+        <div class="search-results" *ngIf="carrerasFiltradas.length > 0">
+          <div
+            class="search-result-item"
+            *ngFor="let c of carrerasFiltradas"
+            (click)="seleccionarCarrera(c)"
+          >
+            {{ c.nombre }}
+          </div>
+        </div>
       </div>
 
-      <!-- TABLA SIEMPRE VISIBLE -->
       <table class="tabla-seleccion">
         <thead>
           <tr>
@@ -36,8 +38,6 @@
           </tr>
         </thead>
         <tbody>
-
-          <!-- Mostrar filas si existen -->
           <tr *ngFor="let c of carrerasSeleccionadas; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ c.nombre }}</td>
@@ -45,37 +45,37 @@
               <button class="remove-btn" (click)="eliminarCarrera(i)">✕</button>
             </td>
           </tr>
-
-          <!-- Si no hay elementos, mostrar una fila vacía -->
           <tr *ngIf="carrerasSeleccionadas.length === 0">
             <td colspan="3" class="empty-row">—</td>
           </tr>
-
         </tbody>
       </table>
     </div>
 
-    <!-- ================= TUTORES ================= -->
+    <!-- --------------------- TUTORES --------------------- -->
     <div class="section">
       <div class="section-bar">Tutores</div>
 
-      <div class="section-row">
-        <select id="tutor" [(ngModel)]="tutorSeleccionado">
-          <option [ngValue]="null" disabled selected>Selecciona un tutor</option>
-          <option *ngFor="let t of tutoresDisponibles" [ngValue]="t.per_id">
-            {{ t.nombre }}
-          </option>
-        </select>
+      <div class="section-row" style="position: relative;">
+        <input
+          type="text"
+          placeholder="Buscar tutor..."
+          [(ngModel)]="tutorBusqueda"
+          (input)="filtrarTutores()"
+          class="search-input"
+        />
 
-        <button class="icon-button" (click)="agregarTutor()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">
-            <path fill="#10b981"
-              d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z" />
-          </svg>
-        </button>
+        <div class="search-results" *ngIf="tutoresFiltrados.length > 0">
+          <div
+            class="search-result-item"
+            *ngFor="let t of tutoresFiltrados"
+            (click)="seleccionarTutor(t)"
+          >
+            {{ t.nombre }} ({{ t.rut }})
+          </div>
+        </div>
       </div>
 
-      <!-- TABLA TUTORES SIEMPRE VISIBLE -->
       <table class="tabla-seleccion">
         <thead>
           <tr>
@@ -86,8 +86,6 @@
           </tr>
         </thead>
         <tbody>
-
-          <!-- Con tutores -->
           <tr *ngFor="let t of tutoresSeleccionados; let i = index">
             <td>{{ i + 1 }}</td>
             <td>{{ t.rut }}</td>
@@ -96,17 +94,14 @@
               <button class="remove-btn" (click)="eliminarTutor(i)">✕</button>
             </td>
           </tr>
-
-          <!-- Vacía -->
           <tr *ngIf="tutoresSeleccionados.length === 0">
             <td colspan="4" class="empty-row">—</td>
           </tr>
-
         </tbody>
       </table>
     </div>
 
-    <!-- ================= FOOTER ================= -->
+    <!-- --------------------- BOTONES --------------------- -->
     <div class="button-row">
       <button class="primary-button" (click)="guardar()">
         {{ tutoriasEditar ? 'Guardar cambios' : 'Crear Tutoría' }}

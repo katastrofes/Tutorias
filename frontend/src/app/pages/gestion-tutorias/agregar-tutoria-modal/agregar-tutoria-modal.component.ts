@@ -27,14 +27,27 @@ export class AgregarTutoriaModalComponent implements OnChanges {
   carrerasSeleccionadas: Carrera[] = [];
   tutoresSeleccionados: Persona[] = [];
 
+  // Para búsqueda
+  carreraBusqueda: string = '';
+  carrerasFiltradas: Carrera[] = [];
+  tutorBusqueda: string = '';
+  tutoresFiltrados: Persona[] = [];
+
   // --------------------- CARRERAS ---------------------
-  agregarCarrera() {
-    if (!this.carreraSeleccionada) return;
+  filtrarCarreras() {
+    const texto = this.carreraBusqueda.toLowerCase();
+    this.carrerasFiltradas = this.carrerasDisponibles.filter(c =>
+      c.nombre.toLowerCase().includes(texto) &&
+      !this.carrerasSeleccionadas.some(sel => sel.id === c.id)
+    );
+  }
 
-    const carrera = this.carrerasDisponibles.find(c => c.id === this.carreraSeleccionada);
-    if (!carrera || this.carrerasSeleccionadas.some(c => c.id === carrera.id)) return;
-
-    this.carrerasSeleccionadas.push(carrera);
+  seleccionarCarrera(carrera: Carrera) {
+    if (!this.carrerasSeleccionadas.some(c => c.id === carrera.id)) {
+      this.carrerasSeleccionadas.push(carrera);
+    }
+    this.carreraBusqueda = '';
+    this.carrerasFiltradas = [];
   }
 
   eliminarCarrera(index: number) {
@@ -42,13 +55,20 @@ export class AgregarTutoriaModalComponent implements OnChanges {
   }
 
   // --------------------- TUTORES ---------------------
-  agregarTutor() {
-    if (!this.tutorSeleccionado) return;
+  filtrarTutores() {
+    const texto = this.tutorBusqueda.toLowerCase();
+    this.tutoresFiltrados = this.tutoresDisponibles.filter(t =>
+      !this.tutoresSeleccionados.some(sel => sel.per_id === t.per_id) &&
+      (t.nombre.toLowerCase().includes(texto) || t.rut.includes(texto))
+    );
+  }
 
-    const tutor = this.tutoresDisponibles.find(t => t.per_id === this.tutorSeleccionado);
-    if (!tutor || this.tutoresSeleccionados.some(t => t.per_id === tutor.per_id)) return;
-
-    this.tutoresSeleccionados.push(tutor);
+  seleccionarTutor(tutor: Persona) {
+    if (!this.tutoresSeleccionados.some(t => t.per_id === tutor.per_id)) {
+      this.tutoresSeleccionados.push(tutor);
+    }
+    this.tutorBusqueda = '';
+    this.tutoresFiltrados = [];
   }
 
   eliminarTutor(index: number) {
@@ -57,7 +77,7 @@ export class AgregarTutoriaModalComponent implements OnChanges {
 
   // --------------------- GUARDAR / CERRAR ---------------------
   guardar() {
-    if (this.tutoriasEditar && this.carrerasSeleccionadas.length === 0) {
+    if (this.carrerasSeleccionadas.length === 0) {
       alert('Error: una tutoría debe tener al menos una carrera.');
       return;
     }
@@ -68,22 +88,29 @@ export class AgregarTutoriaModalComponent implements OnChanges {
       tutorIds: this.tutoresSeleccionados.map(t => t.per_id)
     });
 
-    // Limpiar después de emitir
+    this.limpiarModal();
+  }
+
+  cerrar() {
+    this.close.emit();
+    this.limpiarModal();
+  }
+
+  private limpiarModal() {
     this.tutoriasEditar = undefined;
     this.carrerasSeleccionadas = [];
     this.tutoresSeleccionados = [];
     this.carreraSeleccionada = null;
     this.tutorSeleccionado = null;
-  }
-
-  cerrar() {
-    this.close.emit();
+    this.carreraBusqueda = '';
+    this.carrerasFiltradas = [];
+    this.tutorBusqueda = '';
+    this.tutoresFiltrados = [];
   }
 
   // --------------------- DETECTAR CAMBIO DE EDICIÓN ---------------------
   ngOnChanges(changes: SimpleChanges) {
     if (changes['tutoriasEditar'] && this.tutoriasEditar) {
-      // Modo edición → cargar valores existentes
       this.carrerasSeleccionadas = this.carrerasDisponibles.filter(c =>
         this.tutoriasEditar!.carreraIds.includes(c.id)
       );
@@ -91,11 +118,7 @@ export class AgregarTutoriaModalComponent implements OnChanges {
         this.tutoriasEditar!.tutorIds.includes(t.per_id)
       );
     } else if (!this.tutoriasEditar) {
-      // Modo creación → limpiar todos los selects
-      this.carrerasSeleccionadas = [];
-      this.tutoresSeleccionados = [];
-      this.carreraSeleccionada = null;
-      this.tutorSeleccionado = null;
+      this.limpiarModal();
     }
   }
 }

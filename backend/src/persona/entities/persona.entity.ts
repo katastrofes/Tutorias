@@ -6,5 +6,8 @@ export class Persona {
   per_id: number;
 
   @Column()
+  rut: string;
+
+  @Column()
   nombre: string;
 }

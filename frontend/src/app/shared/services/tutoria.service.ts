@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Carrera } from '../models/carrera';
 import { Persona } from '../models/persona';
 import { Tutoria } from '../models/tutoria';
+import { Periodo } from '../models/periodo';
 
 @Injectable({
   providedIn: 'root',
@@ -25,10 +26,23 @@ export class TutoriaService {
     return this.http.get<Persona[]>(`${this.apiUrl}/persona`); // Ajusta si no hay endpoint
   }
 
-  createTutoria(data: Tutoria): Observable<any> {
-    return this.http.post(`${this.apiUrl}/tutoria`, data);
-  }
   getTutoriasPorPeriodo(semestre: number, anio: number) {
   return this.http.get<any[]>(`${this.apiUrl}/tutoria/periodo?semestre=${semestre}&año=${anio}`);
+  }
+
+  createTutoria(data: { periodoId: number, carreraIds: number[], tutorIds?: number[] }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/tutoria`, data);
+  }
+
+  updateTutoria(id: number, data: { carreraIds?: number[], tutorIds?: number[] }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/tutoria/${id}`, data);
+  }
+
+  removeTutoria(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/tutoria/${id}`);
+  }
+
+  getPeriodos() {
+  return this.http.get<Periodo[]>(`${this.apiUrl}/tutoria/periodos`);
   }
 }

@@ -30,7 +30,7 @@
    HEADER
    ========================================== */
 .modal-header {
-  background: #96A8B9;
+  background: #B0B0B0;
   padding: 20px;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .section-bar {
-  background: #C7D1DA;
+  background: #DBDBDB;
   font-weight: 700;
   padding: 10px 14px;
   border-radius: 8px;
@@ -106,29 +106,28 @@ select {
   border-collapse: collapse;
   margin-top: 12px;
   font-size: 14px;
-  background: #E4F0FA;
   border-radius: 6px;
   overflow: hidden;
 }
 
 /* CABECERA */
 .tabla-seleccion thead tr {
-  background: #96A8B9;
+  background: #B0B0B0;
 }
 
 .tabla-seleccion th {
   padding: 8px;
   color: #1e2a3a;
   font-weight: bold;
-  border: 1px solid #96A8B9;
+  border: 1px solid #9E9E9E;
   text-align: center;
 }
 
 /* FILAS */
 .tabla-seleccion td {
   padding: 8px;
-  border: 1px solid #96A8B9;
-  background: #E4F0FA; 
+  border: 1px solid #9E9E9E;
+  background: #F5F5F5; 
   color: #1e2a3a;
   text-align: center;
 }
@@ -190,3 +189,39 @@ select {
 .cancel-button:hover {
   background-color: #f3f4f6;
 }
+
+.search-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.search-results {
+  position: absolute;
+  top: 100%; /* justo debajo del input */
+  left: 0;
+  width: 100%;
+  max-height: 120px; /* mostrar hasta 3 resultados visibles */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 4px;
+  background-color: #fff;
+  z-index: 10;
+}
+
+.search-result-item {
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.search-result-item:hover {
+  background-color: #f0f0f0;
+  opacity: 0.8;
+}
+
+
