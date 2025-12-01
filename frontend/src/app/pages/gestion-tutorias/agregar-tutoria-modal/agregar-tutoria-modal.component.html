@@ -1,30 +1,116 @@
-<div class="modal-container">
-  <h2>Agregar Tutoría</h2>
+<div *ngIf="visible" class="modal-overlay">
+  <div class="modal-container">
 
-  <div class="form-group">
-    <label for="carrera">Carreras</label>
-    <div class="select-row">
-      <select [(ngModel)]="carreraSeleccionada">
-        <option [ngValue]="null" disabled selected>Selecciona una carrera</option>
-        <option *ngFor="let c of carrerasDisponibles" [ngValue]="c">{{ c.nombre }}</option>
-      </select>
-      <button (click)="agregarCarrera()" class="small-button">Agregar Carrera</button>
+    <!-- ================= HEADER ================= -->
+    <div class="modal-header">
+      <h2>Agregar Tutoría</h2>
     </div>
-  </div>
 
-  <div class="form-group">
-    <label for="tutor">Tutores</label>
-    <div class="select-row">
-      <select [(ngModel)]="tutorSeleccionado">
-        <option [ngValue]="null" disabled selected>Selecciona un tutor</option>
-        <option *ngFor="let t of tutoresDisponibles" [ngValue]="t">{{ t.nombre }}</option>
-      </select>
-      <button (click)="agregarTutor()" class="small-button">Agregar Tutor</button>
+    <!-- ================= CARRERAS ================= -->
+    <div class="section">
+      <div class="section-bar">Carreras</div>
+
+      <div class="section-row">
+        <select id="carrera" [(ngModel)]="carreraSeleccionada">
+          <option [ngValue]="null" disabled selected>Selecciona una carrera</option>
+          <option *ngFor="let c of carrerasDisponibles" [ngValue]="c.id">
+            {{ c.nombre }}
+          </option>
+        </select>
+
+        <button class="icon-button" (click)="agregarCarrera()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">
+            <path fill="#10b981"
+              d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- TABLA SIEMPRE VISIBLE -->
+      <table class="tabla-seleccion">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre Carrera</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Mostrar filas si existen -->
+          <tr *ngFor="let c of carrerasSeleccionadas; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ c.nombre }}</td>
+            <td>
+              <button class="remove-btn" (click)="eliminarCarrera(i)">✕</button>
+            </td>
+          </tr>
+
+          <!-- Si no hay elementos, mostrar una fila vacía -->
+          <tr *ngIf="carrerasSeleccionadas.length === 0">
+            <td colspan="3" class="empty-row">—</td>
+          </tr>
+
+        </tbody>
+      </table>
     </div>
-  </div>
 
-  <div class="button-row">
-    <button class="primary-button" (click)="crearTutoria()">Crear Tutoría</button>
-    <button class="cancel-button" (click)="cancelar()">Cancelar</button>
+    <!-- ================= TUTORES ================= -->
+    <div class="section">
+      <div class="section-bar">Tutores</div>
+
+      <div class="section-row">
+        <select id="tutor" [(ngModel)]="tutorSeleccionado">
+          <option [ngValue]="null" disabled selected>Selecciona un tutor</option>
+          <option *ngFor="let t of tutoresDisponibles" [ngValue]="t.per_id">
+            {{ t.nombre }}
+          </option>
+        </select>
+
+        <button class="icon-button" (click)="agregarTutor()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">
+            <path fill="#10b981"
+              d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- TABLA TUTORES SIEMPRE VISIBLE -->
+      <table class="tabla-seleccion">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>RUT</th>
+            <th>Nombre Tutor</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Con tutores -->
+          <tr *ngFor="let t of tutoresSeleccionados; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ t.rut }}</td>
+            <td>{{ t.nombre }}</td>
+            <td>
+              <button class="remove-btn" (click)="eliminarTutor(i)">✕</button>
+            </td>
+          </tr>
+
+          <!-- Vacía -->
+          <tr *ngIf="tutoresSeleccionados.length === 0">
+            <td colspan="4" class="empty-row">—</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <div class="button-row">
+      <button class="primary-button" (click)="guardar()">Crear Tutoría</button>
+      <button class="cancel-button" (click)="cerrar()">Cancelar</button>
+    </div>
+
   </div>
 </div>

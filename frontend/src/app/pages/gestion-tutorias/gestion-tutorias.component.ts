@@ -44,8 +44,16 @@ export class GestionTutoriasComponent implements OnInit {
 
   mostrarModal = false;
 
-  carreras: Carrera[] = [];
-  tutores: Persona[] = [];
+  carreras: Carrera[] = [
+    { id: 1, nombre: 'Ingeniería Informática' },
+    { id: 2, nombre: 'Ingeniería Civil' },
+    { id: 3, nombre: 'Administración de Empresas' },
+  ];
+  tutores: Persona[] = [
+    { per_id: 101, rut: '11.111.111-1', nombre: 'Juan Pérez' },
+    { per_id: 102, rut: '11.111.111-1', nombre: 'María López' },
+    { per_id: 103, rut: '11.111.111-1', nombre: 'Carlos Ruiz' },
+  ];
 
   constructor(private tutoriaService: TutoriaService) {}
 
