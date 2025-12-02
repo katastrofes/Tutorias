@@ -8,12 +8,9 @@ import { TutoriaService } from './tutoria.service';
 export class TutoriaController {
   constructor(private readonly service: TutoriaService) {}
 
-  @Get('periodo')
-    getByPeriodo(
-      @Query('semestre') semestre: number,
-      @Query('año') año: number
-    ) {
-      return this.service.findByPeriodo(semestre, año);
+   @Get('periodos')  // Endpoint para obtener todos los periodos
+  getAllPeriodos() {
+    return this.service.getAllPeriodos();
   }
 
   @Get()
@@ -34,6 +31,11 @@ export class TutoriaController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.service.remove(id);
+  }
+
+  @Get('periodo') 
+  getTutoriasPorPeriodo(@Query('periodoId') periodoId: number) {
+    return this.service.getTutoriasPorPeriodo(periodoId);
   }
   
 }

@@ -26,8 +26,8 @@ export class TutoriaService {
     return this.http.get<Persona[]>(`${this.apiUrl}/persona`); // Ajusta si no hay endpoint
   }
 
-  getTutoriasPorPeriodo(semestre: number, anio: number) {
-  return this.http.get<any[]>(`${this.apiUrl}/tutoria/periodo?semestre=${semestre}&año=${anio}`);
+  getTutoriasPorPeriodo(periodoId: number): Observable<Tutoria[]> {
+    return this.http.get<Tutoria[]>(`${this.apiUrl}/tutoria/periodo?periodoId=${periodoId}`);
   }
 
   createTutoria(data: { periodoId: number, carreraIds: number[], tutorIds?: number[] }): Observable<any> {
@@ -45,4 +45,5 @@ export class TutoriaService {
   getPeriodos() {
   return this.http.get<Periodo[]>(`${this.apiUrl}/tutoria/periodos`);
   }
+
 }

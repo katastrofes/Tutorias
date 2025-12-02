@@ -83,5 +83,22 @@ export class TutoriaService {
     return this.tutoriaRepo.remove(tutoria);
   }
 
-  
+   async getAllPeriodos() {
+    return this.periodoRepo.find();  
+  }
+
+  async getTutoriasPorPeriodo(periodoId: number) {
+    const periodo = await this.periodoRepo.findOne({
+      where: { peri_id: periodoId },
+    });
+
+    if (!periodo) {
+      throw new NotFoundException('Periodo no encontrado');
+    }
+
+    return this.tutoriaRepo.find({
+      where: { periodo }, // Filtra las tutorías por el periodo
+      relations: ['carreras', 'tutores'], // Asegúrate de incluir relaciones
+    });
+  }
 }
