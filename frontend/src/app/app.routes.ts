@@ -22,6 +22,8 @@ import { ReporteTutoresComponent } from './pages/reporte-tutores/reporte-tutores
 import { ReporteEstudiantesComponent } from './pages/reporte-estudiantes/reporte-estudiantes.component';
 import { GestionTutoriasComponent } from './pages/gestion-tutorias/gestion-tutorias.component';
 import { GestionSesionesComponent } from './pages/gestion-sesiones/gestion-sesiones.component';
+import { ReporteSesionesComponent } from './pages/reporte-sesiones/reporte-sesiones.component';
+import { ReporteTutoriasComponent } from './pages/reporte-tutorias/reporte-tutorias.component';
 
 export const routes: Routes = [
   {
@@ -48,6 +50,14 @@ export const routes: Routes = [
       {
         path:'reporte-estudiantes',
         component: ReporteEstudiantesComponent,
+      },
+      {
+        path:'reporte-sesiones',
+        component: ReporteSesionesComponent,
+      },
+      {
+        path:'reporte-tutorias',
+        component: ReporteTutoriasComponent,
       },
       {
         path:'calendar',

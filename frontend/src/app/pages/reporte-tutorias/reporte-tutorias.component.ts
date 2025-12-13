@@ -7,29 +7,29 @@ import { CommonModule } from '@angular/common';
 interface TableData {
   id: number | undefined;
   sede: string;
-  tutId: string;
-  facultad: string;
+  tutoriaId: string;
   nombreTutoria: string;
-  rut: string;
-  nombre: string;
-  carreraTutor: string;
-  email: string;
-  celular: string;
-  sesionesCreadas: number;
+  tutores: number;
+  tutorados: number;
+  carrerasAsociadas: number;
+  sessionesPorTutor: number;
+  sessionesCronograma: number;
+  totalSesiones: number;
+  totalSesionesRealizadas: number;
 }
 
 @Component({
-  selector: 'app-reporte-tutores',
-  templateUrl: './reporte-tutores.component.html',
+  selector: 'app-reporte-tutorias',
+  templateUrl: './reporte-tutorias.component.html',
   imports: [
-      PageBreadcrumbComponent,
-      LabelComponent,
-      SelectComponent,
-      CommonModule,
+    PageBreadcrumbComponent,
+    LabelComponent,
+    SelectComponent,
+    CommonModule,
   ],
   styles: ``
 })
-export class ReporteTutoresComponent implements OnInit {
+export class ReporteTutoriasComponent implements OnInit {
   periodoOptions = [
     { value: '60', label: '2025 Semestre 2' },
     { value: '59', label: '2025 Semestre 1' },
@@ -39,28 +39,19 @@ export class ReporteTutoresComponent implements OnInit {
     { value: '2', label: 'Sede Centro' },
     { value: '3', label: 'Sede Sur' },
   ];
-  carreraOptions = [
-    { value: '1', label: 'Ingeniería Civil Industrial' },
-    { value: '2', label: 'Ingeniería Comercial' },
-    { value: '3', label: 'Ingeniería en Computación' },
-    { value: '4', label: 'Ingeniería Civil Mecánica' },
-    { value: '5', label: 'Ingeniería Electrónica' },
-  ];
   tutoriaOptions = [
-    { value: '1', label: 'López Martínez Ana María' },
-    { value: '2', label: 'Ing. C. Comercial / 537' },
-    { value: '3', label: 'Ing. C. Computación / 523' },
-    { value: '4', label: 'Ing. C. Mecánica / 518' },
-    { value: '5', label: 'Ing. C. Electrónica / 510' },
+    { value: '1', label: 'Matemáticas Básicas' },
+    { value: '2', label: 'Contabilidad Financiera' },
+    { value: '3', label: 'Programación Avanzada' },
+    { value: '4', label: 'Termodinámica' },
+    { value: '5', label: 'Electrónica Digital' },
   ];
 
   selectedPeriodo = '';
   selectedSede = '';
-  selectedCarrera = '';
   selectedTutoria = '';
 
   tableData: TableData[] = [];
-
 
   constructor() { }
 
@@ -75,11 +66,6 @@ export class ReporteTutoresComponent implements OnInit {
   handleSedeChange(value: string) {
     this.selectedSede = value;
     console.log('Sede seleccionada:', value);
-  }
-
-  handleCarreraChange(value: string) {
-    this.selectedCarrera = value;
-    console.log('Carrera seleccionada:', value);
   }
 
   handleTutoriaChange(value: string) {

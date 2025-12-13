@@ -4,6 +4,20 @@ import { LabelComponent } from '../../shared/components/form/label/label.compone
 import { SelectComponent } from '../../shared/components/form/select/select.component';
 import { CommonModule } from '@angular/common';
 
+interface TableData {
+  id: number | undefined;
+  tutoriaId: string;
+  nombreTutoria: string;
+  rut: string;
+  nombre: string;
+  email: string;
+  celular: string;
+  carreraTutorado: string;
+  anioIngreso: number;
+  clasesAsistidas: number;
+  sesionesTotales: number;
+}
+
 @Component({
   selector: 'app-reporte-estudiantes',
   templateUrl: './reporte-estudiantes.component.html',
@@ -16,112 +30,60 @@ import { CommonModule } from '@angular/common';
   styles: ``
 })
 export class ReporteEstudiantesComponent implements OnInit {
-  optionsPeriodo = [
-    { value: '60', label: '2025 Semestre 2' }
+  periodoOptions = [
+    { value: '60', label: '2025 Semestre 2' },
+    { value: '59', label: '2025 Semestre 1' },
   ];
-  
-  optionsCarrera = [
-    { value: '1', label: 'Ingeniería Civil Industrial' }
+  sedeOptions = [
+    { value: '1', label: 'Sede Principal' },
+    { value: '2', label: 'Sede Centro' },
+    { value: '3', label: 'Sede Sur' },
   ];
-  tableData = [
-    {
-      id: 1,
-      user: {
-        name: 'González Tapia, Francisco Javier',
-        rut: '12345678-9',
-        carrera: 'Ingeniería Civil Industrial',
-        role: 'Tutor',
-        yearOfEntry: '2025',
-        asistencia: '8',
-        email: 'francisco.gonzalez@example.com',
-      },
-      tutorias: 'Ing. C. Computación / 523',
-      tutorado: 'Juan Pérez',
-      facultad: 'Facultad de Ingeniería',
-      sessions: 10,
-    },
-    {
-      id: 2,
-      user: {
-        name: 'Fernández García, José Luis',
-        rut: '98765432-1',
-        carrera: 'Ingeniería Comercial',
-        role: 'Tutor',
-        yearOfEntry: '2025',
-        asistencia: '7',
-        email: 'jose.fernandez@example.com',
-      },
-      tutorias: 'Ing. C. Comercial / 537',
-      tutorado: 'Ana López',
-      facultad: 'Facultad de Ciencias Económicas',
-      sessions: 8,
-    },
-    {
-      id: 3,
-      user: {
-        name: 'Morales Ruiz, Carmen Beatriz',
-        rut: '23456789-0',
-        carrera: 'Ingeniería en Computación',
-        role: 'Tutor',
-        yearOfEntry: '2025',
-        asistencia: '12',
-        email: 'carmen.morales@example.com',
-      },
-      tutorias: 'Ing. C. Computación / 523',
-      tutorado: 'Luis García',
-      facultad: 'Facultad de Ciencias de la Computación',
-      sessions: 12,
-    },
-    {
-      id: 4,
-      user: {
-        name: 'Hernández Gómez, Carolina Pilar',
-        rut: '87654321-0',
-        carrera: 'Ingeniería Civil Mecánica',
-        role: 'Tutor',
-        yearOfEntry: '2025',
-        asistencia: '10',
-        email: 'carolina.hernandez@example.com',
-      },
-      tutorias: 'Ing. C. Mecánica / 518',
-      tutorado: 'Carlos Sánchez',
-      facultad: 'Facultad de Ingeniería',
-      sessions: 15,
-    },
-    {
-      id: 5,
-      user: {
-        name: 'Sánchez Fernández, Pedro Pablo',
-        rut: '34567890-1',
-        carrera: 'Ingeniería Electrónica',
-        role: 'Tutor',
-        yearOfEntry: '2025',
-        asistencia: '7',
-        email: 'pedro.sanchez@example.com',
-      },
-      tutorias: 'Ing. C. Electrónica / 510',
-      tutorado: 'Pedro Morales',
-      facultad: 'Facultad de Ingeniería',
-      sessions: 7,
-    },
+  carreraOptions = [
+    { value: '1', label: 'Ingeniería Civil Industrial' },
+    { value: '2', label: 'Ingeniería Comercial' },
+    { value: '3', label: 'Ingeniería en Computación' },
+    { value: '4', label: 'Ingeniería Civil Mecánica' },
+    { value: '5', label: 'Ingeniería Electrónica' },
+  ];
+  tutoriaOptions = [
+    { value: '1', label: 'Matemáticas Básicas' },
+    { value: '2', label: 'Contabilidad Financiera' },
+    { value: '3', label: 'Programación Avanzada' },
+    { value: '4', label: 'Termodinámica' },
+    { value: '5', label: 'Electrónica Digital' },
   ];
 
+  selectedPeriodo = '';
+  selectedSede = '';
+  selectedCarrera = '';
+  selectedTutoria = '';
 
+  tableData: TableData[] = [
+  ];
 
-  selectedValuePeriodo = '';
-  selectedValueCarrera = '';
   constructor() { }
 
   ngOnInit() {
   }
 
-  handleSelectChangePeriodo(valuePeriodo: string) {
-    this.selectedValuePeriodo = valuePeriodo;
-    console.log('Selected value:', valuePeriodo);
+  handlePeriodoChange(value: string) {
+    this.selectedPeriodo = value;
+    console.log('Periodo seleccionado:', value);
   }
 
-  handleSelectChangeCarrera(valueCarrera: string) {
-    this.selectedValueCarrera = valueCarrera;
-    console.log('Selected value:', valueCarrera);
+  handleSedeChange(value: string) {
+    this.selectedSede = value;
+    console.log('Sede seleccionada:', value);
+  }
+
+  handleCarreraChange(value: string) {
+    this.selectedCarrera = value;
+    console.log('Carrera seleccionada:', value);
+  }
+
+  handleTutoriaChange(value: string) {
+    this.selectedTutoria = value;
+    console.log('Tutoría seleccionada:', value);
   }
 }

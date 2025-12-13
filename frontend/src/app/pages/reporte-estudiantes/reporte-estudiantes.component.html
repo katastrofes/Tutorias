@@ -3,75 +3,115 @@
   <div>
     <div class="p-4 sm:p-6">
     <div class="space-y-6">
-      <ng-content>      <div>
-      <app-label>Periodo</app-label>
-      <app-select
-        [options]="optionsPeriodo"
-        placeholder="Selecciona un periodo"
-        [value]="selectedValuePeriodo"
-        (valueChange)="handleSelectChangePeriodo($event)"
-        className="dark:bg-dark-900"
-      ></app-select>
-
-      <div class="space-y-6 py-4">
-      <ng-content>      <div>
-      <app-label>Carrera</app-label>
-      <app-select
-        [options]="optionsCarrera"
-        placeholder="Selecciona una carrera"
-        [value]="selectedValueCarrera"
-        (valueChange)="handleSelectChangeCarrera($event)"
-        className="dark:bg-dark-900"
-      ></app-select>
-      
-</div>
+      <ng-content>
+      <div class="space-y-4">
+        <div>
+          <app-label>Periodo</app-label>
+          <app-select
+            [options]="periodoOptions"
+            placeholder="Selecciona un periodo"
+            [value]="selectedPeriodo"
+            (valueChange)="handlePeriodoChange($event)"
+            className="dark:bg-dark-900"
+          ></app-select>
+        </div>
+        <div>
+          <app-label>Sede</app-label>
+          <app-select
+            [options]="sedeOptions"
+            placeholder="Selecciona una sede"
+            [value]="selectedSede"
+            (valueChange)="handleSedeChange($event)"
+            className="dark:bg-dark-900"
+          ></app-select>
+        </div>
+        <div>
+          <app-label>Tutoría</app-label>
+          <app-select
+            [options]="tutoriaOptions"
+            placeholder="Selecciona una tutoría"
+            [value]="selectedTutoria"
+            (valueChange)="handleTutoriaChange($event)"
+            className="dark:bg-dark-900"
+          ></app-select>
+        </div>        
+        <div>
+          <app-label>Carrera</app-label>
+          <app-select
+            [options]="carreraOptions"
+            placeholder="Selecciona una carrera"
+            [value]="selectedCarrera"
+            (valueChange)="handleCarreraChange($event)"
+            className="dark:bg-dark-900"
+          ></app-select>
+        </div>
+      </div>
+</ng-content>
 <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
   <div class="max-w-full overflow-x-auto">
     <table class="min-w-full">
       <!-- Table Header -->
       <thead class="border-b border-gray-100 dark:border-white/[0.05]">
         <tr>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Tutorias</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Rut</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Tutorado</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Carrera</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Año ingreso</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Asistencia</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Sesiones</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Correo</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Tutoría ID</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Nombre Tutoría</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">RUT</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Nombre</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Email</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Celular</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Carrera Tutorado</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Año Ingreso</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Clases Asistidas</th>
+          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Sesiones Totales</th>
         </tr>
       </thead>
       <!-- Table Body -->
+      @if (tableData.length > 0) {
       <tbody class="divide-y divide-gray-100 dark:divide-white/[0.05]">
         @for (order of tableData; track $index) {
         <tr>
           <td class="px-5 py-4 sm:px-6 text-start text-gray-500 text-theme-sm dark:text-gray-400">
-              {{ order.tutorias }}
+              {{ order.tutoriaId }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.user.rut }}
+            {{ order.nombreTutoria }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.tutorado }}
+            {{ order.rut }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.user.carrera }}
+            {{ order.nombre }}
           </td>
-          <td class="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-            {{ order.user.yearOfEntry }}
+          <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+            {{ order.email }}
           </td>
-          <td class="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-            {{ order.user.asistencia }}
+          <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+            {{ order.celular }}
           </td>
-          <td class="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-            {{ order.sessions }}
+          <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+            {{ order.carreraTutorado }}
           </td>
-          <td class="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-            {{ order.user.email }}
+          <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+            {{ order.anioIngreso }}
+          </td>
+          <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+            {{ order.clasesAsistidas }}
+          </td>
+          <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+            {{ order.sesionesTotales }}
           </td>
         </tr>
         }
       </tbody>
+      } @else {
+          <tbody>
+            <tr>
+              <td colspan="5" class="py-6 px-4 text-gray-500 text-theme-sm dark:text-gray-400">
+                No se encontraron registros.
+              </td>
+            </tr>
+          </tbody>
+        }
     </table>
   </div>
 </div>

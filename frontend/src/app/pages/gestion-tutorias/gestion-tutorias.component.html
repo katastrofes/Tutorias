@@ -38,8 +38,10 @@
           </thead>
 
           <!-- Table Body -->
+          @if (tableData.length > 0) {
           <tbody class="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            <tr *ngFor="let info of tableData; let i = index">
+            @for (info of tableData; track info.id; let i = $index) {
+            <tr>
               <td class="px-5 py-4 sm:px-6 text-start text-gray-500 text-theme-sm dark:text-gray-400">
                 {{ i + 1 }}
               </td>
@@ -85,14 +87,17 @@
                 </div>
               </td>
             </tr>
-
-            <!-- No hay datos -->
-            <tr *ngIf="tableData.length === 0">
+            }
+          </tbody>
+          } @else {
+          <tbody>
+            <tr>
               <td colspan="5" class="py-6 px-4 text-gray-500 text-theme-sm dark:text-gray-400">
                 No se encontraron registros.
               </td>
             </tr>
           </tbody>
+          }
         </table>
       </div>
     </div>
