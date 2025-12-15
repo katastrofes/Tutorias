@@ -1,0 +1,98 @@
+<div class="flex flex-col w-full h-full">
+  <div class="p-2">
+    <button
+    (click)="nuevaSesion()"
+    class="flex items-center gap-2 px-4 py-2 border border-[#B9B9B9] rounded-full text-[#355085] font-bold hover:bg-blue-50 cursor-pointer transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+    Nueva Sesión
+  </button>
+  </div>
+  <div class="overflow-y-auto max-h-[80vh]">
+    
+  <table class="min-w-full divide-y divide-[#A5CBEB]">
+
+    <thead class="bg-[#E2E8F0] sticky top-0 z-10 border-y border-[#A5CBEB]">
+      <tr>
+        <th class="px-4 py-3 text-left">Nro.</th>
+        <th class="px-4 py-3 text-left">Fecha</th>
+        <th class="px-4 py-3 text-left">Temática</th>
+        <th class="px-4 py-3 text-left">Autor</th>
+        <th class="px-4 py-3 text-left">Lugar</th>
+        <th class="px-4 py-3 text-left">Asistencia</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (sesiones.length > 0) {
+        @for (sesion of sesiones; track sesion.idSesion; let i = $index) {
+          <tr
+            class="cursor-pointer transition-colors duration-200"
+            [ngClass]="{
+              'bg-[#E0E7FF]': filaExpandida === sesion.idSesion,
+              'bg-[#F1F5F9]': filaExpandida !== sesion.idSesion && i % 2 === 1,
+              'bg-white': filaExpandida !== sesion.idSesion && i % 2 === 0,
+              'hover:bg-gray-200': true
+            }"
+            (click)="toggleExpand(sesion.idSesion)"
+          >
+            <td class="px-4 py-3">{{ sesion.nro }}</td>
+            <td class="px-4 py-3">{{ sesion.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td class="px-4 py-3 truncate max-w-xs" [title]="sesion.tematica">{{ sesion.tematica }}</td>
+            <td class="px-4 py-3">{{ sesion.autor }}</td>
+            <td class="px-4 py-3">{{ sesion.lugar }}</td>
+            <td class="px-4 py-3 w-70">
+              <div class="flex gap-10 items-center">
+                <button
+                  class="bg-[#355085] hover:bg-[#2c436f] text-white px-7 py-2 rounded-full text-sm cursor-pointer"
+                  (click)="verAsistencia(sesion); $event.stopPropagation()"
+                >
+                  Registrar Asistencia
+                </button>
+                <button
+                  class="text-[#355085] hover:text-[#2c436f]"
+                  (click)="editar(sesion); $event.stopPropagation()"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                  <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
+                </svg>
+
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          @if (filaExpandida === sesion.idSesion) {
+            <tr>
+              <td colspan="6" class="px-6 py-4 bg-[#D9D9D9] text-sm text-[#1E293B] space-y-2">
+                <div>
+                  <strong>Objetivos:</strong> {{ sesion.objetivos }}
+                </div>
+                @if (sesion.competencias) {
+                  <div>
+                    <strong>Competencias:</strong> {{ sesion.competencias }}
+                  </div>
+                }
+
+                @if (sesion.observaciones) { 
+                  <div>
+                    <strong>Observaciones:</strong> {{ sesion.observaciones }}
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        }
+      } @else {
+        <tr>
+          <td colspan="6" class="py-6 px-4">
+            No hay sesiones registradas.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  </div>
+</div>

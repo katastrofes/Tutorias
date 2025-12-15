@@ -1,0 +1,175 @@
+<!-- ALTURA CALCULADA: 100vh - 64px (altura del header) -->
+<div class="flex flex-col" style="height: calc(100vh - 4rem)">
+  <mat-drawer-container class="flex-1 h-full">
+    
+    <!-- SIDEBAR / STEPS -->
+    <mat-drawer 
+      class="w-60 dark:bg-gray-900 flex flex-col"
+      [autoFocus]="false"
+      [mode]="drawerMode"
+      [opened]="drawerOpened"
+      #matDrawer
+    >
+      <!-- Header del sidebar -->
+      <div class="border-b p-8">
+        <div class="flex items-center justify-center w-full">
+          <div class="flex items-center text-secondary text-md leading-5"> 
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                class="size-6 text-hint">
+              <path d="M11.7 2.805a.75.75 0 0 1 .6 0A60.65 60.65 0 0 1 22.83 8.72a.75.75 0 0 1-.231 1.337 49.948 49.948 0 0 0-9.902 3.912l-.003.002c-.114.06-.227.119-.34.18a.75.75 0 0 1-.707 0A50.88 50.88 0 0 0 7.5 12.173v-.224c0-.131.067-.248.172-.311a54.615 54.615 0 0 1 4.653-2.52.75.75 0 0 0-.65-1.352 56.123 56.123 0 0 0-4.78 2.589 1.858 1.858 0 0 0-.859 1.228 49.803 49.803 0 0 0-4.634-1.527.75.75 0 0 1-.231-1.337A60.653 60.653 0 0 1 11.7 2.805Z" />
+              <path d="M13.06 15.473a48.45 48.45 0 0 1 7.666-3.282c.134 1.414.22 2.843.255 4.284a.75.75 0 0 1-.46.711 47.87 47.87 0 0 0-8.105 4.342.75.75 0 0 1-.832 0 47.87 47.87 0 0 0-8.104-4.342.75.75 0 0 1-.461-.71c.035-1.442.121-2.87.255-4.286.921.304 1.83.634 2.726.99v1.27a1.5 1.5 0 0 0-.14 2.508c-.09.38-.222.753-.397 1.11.452.213.901.434 1.346.66a6.727 6.727 0 0 0 .551-1.607 1.5 1.5 0 0 0 .14-2.67v-.645a48.549 48.549 0 0 1 3.44 1.667 2.25 2.25 0 0 0 2.12 0Z" />
+              <path d="M4.462 19.462c.42-.419.753-.89 1-1.395.453.214.902.435 1.347.662a6.742 6.742 0 0 1-1.286 1.794.75.75 0 0 1-1.06-1.06Z" />
+            </svg>
+            <div class="ml-1.5 font-bold leading-5">
+              {{ asiCodigo }} - {{ asiNombre }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de pasos -->
+      <div class="flex-1 px-6 py-4 overflow-y-auto">
+        <div class="relative">
+          <!-- Línea vertical con color CBD5E1 -->
+          <div class="absolute left-5 top-0 w-0.5" 
+            [style]="{
+            'background-color': '#CBD5E1',
+            'height': 'calc(' + (steps.length * 4) + 'rem)'
+            }"></div>
+          
+          <div class="space-y-8">
+            <ng-container *ngFor="let step of steps; let i = index; let last = last">
+              <div class="relative flex items-start">
+                
+                <!-- Circulo del paso -->
+                <div class="relative z-10 flex-shrink-0">
+                  <a [routerLink]="[step.path]" [relativeTo]="route" 
+                     class="block cursor-pointer"
+                     (click)="goToStep(i)">
+                    <div class="h-10 w-10 rounded-full flex items-center justify-center border-2 border-white dark:border-gray-900 bg-white dark:bg-gray-800"
+                        [style]="{
+                        'border-color': i === currentStep ? '#EDB01C' : '#CBD5E1',
+                        'color': i === currentStep ? '#EDB01C' : '#CBD5E1'
+                        }">
+                    <span class="font-normal">{{ i + 1 }}</span>
+                    </div>
+                  </a>
+                </div>
+                
+                <!-- Contenido del paso -->
+                <div class="ml-4 pt-1 flex-1">
+                  <a [routerLink]="[step.path]" [relativeTo]="route" 
+                     class="block cursor-pointer"
+                     (click)="goToStep(i)">
+                    <div class="font-medium text-gray-900 dark:text-white"
+                         [ngClass]="{'text-[#EDB01C]': i === currentStep}">
+                      {{ step.title }}
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      {{ step.subtitle }}
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-drawer>
+
+    <!-- CONTENT -->
+    <mat-drawer-content class="flex flex-col h-full">
+      
+      <!-- Encabezado visible en mobile -->
+      <div 
+        class="bg-card flex items-center border-b py-2 pl-4 pr-6 dark:bg-transparent sm:py-4 md:pl-6 md:pr-8 lg:hidden lg:border-b-0"
+      >
+        <button mat-icon-button (click)="matDrawer.toggle()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M3 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 5.25Zm0 4.5A.75.75 0 0 1 3.75 9h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 9.75Zm0 4.5a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Zm0 4.5a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+          </svg>
+
+        </button>
+        <h2 class="ml-2.5 truncate text-md font-medium tracking-tight sm:text-xl">
+          {{ asiNombre }} - {{ asiCodigo }}
+        </h2>
+      </div>
+
+      <!-- Barra de progreso (desktop) -->
+      <mat-progress-bar 
+        class="hidden h-0.5 w-full lg:block"
+        [value]="(100 * (currentStep + 1)) / steps.length"
+      ></mat-progress-bar>
+
+      <!-- Contenido principal -->
+      <div class="flex-1 min-h-0 overflow-auto bg-card" cdkScrollable>
+        <div>
+          <router-outlet></router-outlet>
+        </div>
+
+        <!-- Navegación inferior en desktop -->
+        <div class="sticky bottom-4 z-10 hidden p-6 lg:flex">
+          <div class="mx-auto flex items-center justify-center rounded-full bg-[#355085] p-2 shadow-lg">
+            <button mat-flat-button color="accent" (click)="goToPreviousStep()">
+              <span class="inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-6">
+                  <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                </svg>
+                <span class="mr-1 text-white">Atrás</span>
+              </span>
+            </button>
+            
+            <div class="mx-2.5 flex items-center justify-center font-medium leading-5 text-white">
+              <span>{{ currentStep + 1 }}</span>
+              <span class="text-hint mx-0.5 text-white">/</span>
+              <span>{{ steps.length }}</span>
+            </div>
+            
+            <button mat-flat-button color="accent" (click)="goToNextStep()">
+              <span class="inline-flex items-center">
+                <span class="ml-1 text-white">Siguiente</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-6">
+                    <path fill-rule="evenodd" d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                  </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navegación inferior en mobile -->
+      <div class="bg-card flex items-center border-t p-4 lg:hidden">
+        <button mat-icon-button (click)="matDrawer.toggle()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd" d="M3 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 5.25Zm0 4.5A.75.75 0 0 1 3.75 9h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 9.75Zm0 4.5a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Zm0 4.5a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+          </svg>
+
+        </button>
+        
+        <div class="ml-1 flex items-center justify-center font-medium leading-5 lg:ml-2">
+          <span>{{ currentStep + 1 }}</span>
+          <span class="text-hint mx-0.5">/</span>
+          <span>{{ steps.length }}</span>
+        </div>
+        
+        <mat-progress-bar 
+          class="ml-6 flex-auto rounded-full"
+          [value]="(100 * (currentStep + 1)) / steps.length"
+        ></mat-progress-bar>
+        
+        <button class="ml-4" mat-icon-button (click)="goToPreviousStep()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-6">
+            <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        
+        <button class="ml-0.5" mat-icon-button (click)="goToNextStep()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-6">
+            <path fill-rule="evenodd" d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

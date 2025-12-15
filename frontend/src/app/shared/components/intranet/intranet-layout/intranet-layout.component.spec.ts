@@ -1,23 +1,23 @@
 /* tslint:disable:no-unused-variable */
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { GestionSesionesComponent } from './gestion-sesiones.component';
+import { IntranetLayoutComponent } from './intranet-layout.component';
 
-describe('GestionSesionesComponent', () => {
-  let component: GestionSesionesComponent;
-  let fixture: ComponentFixture<GestionSesionesComponent>;
+describe('IntranetLayoutComponent', () => {
+  let component: IntranetLayoutComponent;
+  let fixture: ComponentFixture<IntranetLayoutComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GestionSesionesComponent ]
+      declarations: [ IntranetLayoutComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GestionSesionesComponent);
+    fixture = TestBed.createComponent(IntranetLayoutComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
