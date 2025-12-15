@@ -53,4 +53,8 @@ export class AppHeaderComponent {
       this.searchInput?.nativeElement.focus();
     }
   };
+
+  toggleSidebar(): void {
+    this.sidebarService.toggleExpanded();
+  }
 }

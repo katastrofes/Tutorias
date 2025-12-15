@@ -1,125 +1,35 @@
 import { Routes } from '@angular/router';
-import { EcommerceComponent } from './pages/dashboard/ecommerce/ecommerce.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { FormElementsComponent } from './pages/forms/form-elements/form-elements.component';
-import { BasicTablesComponent } from './pages/tables/basic-tables/basic-tables.component';
-import { BlankComponent } from './pages/blank/blank.component';
-import { NotFoundComponent } from './pages/other-page/not-found/not-found.component';
 import { AppLayoutComponent } from './shared/layout/app-layout/app-layout.component';
-import { InvoicesComponent } from './pages/invoices/invoices.component';
-import { LineChartComponent } from './pages/charts/line-chart/line-chart.component';
-import { BarChartComponent } from './pages/charts/bar-chart/bar-chart.component';
-import { AlertsComponent } from './pages/ui-elements/alerts/alerts.component';
-import { AvatarElementComponent } from './pages/ui-elements/avatar-element/avatar-element.component';
-import { BadgesComponent } from './pages/ui-elements/badges/badges.component';
-import { ButtonsComponent } from './pages/ui-elements/buttons/buttons.component';
-import { ImagesComponent } from './pages/ui-elements/images/images.component';
-import { VideosComponent } from './pages/ui-elements/videos/videos.component';
-import { SignInComponent } from './pages/auth-pages/sign-in/sign-in.component';
-import { SignUpComponent } from './pages/auth-pages/sign-up/sign-up.component';
-import { CalenderComponent } from './pages/calender/calender.component';
-import { ReporteTutoresComponent } from './pages/reporte-tutores/reporte-tutores.component';
-import { ReporteEstudiantesComponent } from './pages/reporte-estudiantes/reporte-estudiantes.component';
-import { GestionTutoriasComponent } from './pages/gestion-tutorias/gestion-tutorias.component';
-import { GestionSesionesComponent } from './pages/gestion-sesiones/gestion-sesiones.component';
+import { EcommerceComponent } from './pages/dashboard/ecommerce/ecommerce.component';
+import { DetalleComponent } from './shared/components/tutor/detalle/detalle.component';
+import { SesionesComponent } from './shared/components/tutor/sesiones/sesiones.component';
+import { TutoradosComponent } from './shared/components/tutor/tutorados/tutorados.component';
+import { RecursosComponent } from './shared/components/tutor/recursos/recursos.component';
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'intranet', pathMatch: 'full' },
+
   {
-    path:'',
-    component:AppLayoutComponent,
-    children:[
+    path: 'intranet',
+    component: AppLayoutComponent,
+    children: [
       {
         path: '',
         component: EcommerceComponent,
         pathMatch: 'full',
       },
+
+      // 👇 RUTA PADRE (Ingeniería Química Ambiental apunta AQUÍ)
       {
-        path:'gestion-tutorias',
-        component: GestionTutoriasComponent,
-      },
-      {
-        path:'gestion-sesiones',
-        component: GestionSesionesComponent,
-      },
-      {
-        path:'reporte-tutores',
-        component: ReporteTutoresComponent,
-      },
-      {
-        path:'reporte-estudiantes',
-        component: ReporteEstudiantesComponent,
-      },
-      {
-        path:'calendar',
-        component:CalenderComponent,
-      },
-      {
-        path:'profile',
-        component:ProfileComponent,
-      },
-      {
-        path:'form-elements',
-        component:FormElementsComponent,
-      },
-      {
-        path:'basic-tables',
-        component:BasicTablesComponent,
-      },
-      {
-        path:'blank',
-        component:BlankComponent,
-      },
-      // support tickets
-      {
-        path:'invoice',
-        component:InvoicesComponent,
-      },
-      {
-        path:'line-chart',
-        component:LineChartComponent,
-      },
-      {
-        path:'bar-chart',
-        component:BarChartComponent,
-      },
-      {
-        path:'alerts',
-        component:AlertsComponent,
-      },
-      {
-        path:'avatars',
-        component:AvatarElementComponent,
-      },
-      {
-        path:'badge',
-        component:BadgesComponent,
-      },
-      {
-        path:'buttons',
-        component:ButtonsComponent,
-      },
-      {
-        path:'images',
-        component:ImagesComponent,
-      },
-      {
-        path:'videos',
-        component:VideosComponent,
-      },
+        path: 'tutor/:year/:semester',
+        component: DetalleComponent,
+        children: [
+          { path: '', redirectTo: 'sesiones', pathMatch: 'full' },
+          { path: 'sesiones', component: SesionesComponent },
+          { path: 'tutorados', component: TutoradosComponent },
+          { path: 'recursos', component: RecursosComponent },
+        ]
+      }
     ]
-  },
-  // auth pages
-  {
-    path:'signin',
-    component:SignInComponent,
-  },
-  {
-    path:'signup',
-    component:SignUpComponent,
-  },
-  // error pages
-  {
-    path:'**',
-    component:NotFoundComponent,
-  },
+  }
 ];
