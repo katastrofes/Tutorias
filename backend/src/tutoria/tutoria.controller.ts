@@ -37,5 +37,27 @@ export class TutoriaController {
   getTutoriasPorPeriodo(@Query('periodoId') periodoId: number) {
     return this.service.getTutoriasPorPeriodo(periodoId);
   }
-  
+
+  @Get('filtro')
+  getTutoriasPorPeriodoYSede(
+    @Query('periodoId') periodoId: number,
+    @Query('sede') sede: string
+  ) {
+    return this.service.getTutoriasPorPeriodoYSede(periodoId, sede);
+  }
+
+  @Get('tutores')
+  async getTutoresFiltrados(
+    @Query('periodoId') periodoId: number,
+    @Query('sede') sede: string,
+    @Query('tutoriaId') tutoriaId: number,
+    @Query('carreraId') carreraId: number,
+  ) {
+    return this.service.getTutoresFiltrados(
+      periodoId,
+      sede,
+      tutoriaId,
+      carreraId,
+    );
+  }
 }

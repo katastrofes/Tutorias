@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Persona } from './persona.entity';
 
-
 @Injectable()
 export class PersonaService {
   constructor(

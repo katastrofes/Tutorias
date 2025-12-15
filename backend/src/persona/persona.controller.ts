@@ -1,5 +1,5 @@
 // src/persona/persona.controller.ts
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { PersonaService } from './persona.service';
 
 @Controller('persona')
@@ -10,4 +10,6 @@ export class PersonaController {
   findAll() {
     return this.personaService.findAll();
   }
+
+  
 }

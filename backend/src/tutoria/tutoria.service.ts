@@ -9,9 +9,8 @@ import { Tutoria } from './entities/tutoria.entity';
 import { CreateTutoriaDto } from './dto/create-tutoria.dto';
 import { UpdateTutoriaDto } from './dto/update-tutoria.dto';
 import { Carrera } from 'src/carrera/entities/carrera.entity';
-import { Persona } from 'src/persona/entities/persona.entity'; 
+import { Persona } from 'src/persona/entities/persona.entity';
 import { Periodo } from './entities/periodo.entity';
-
 
 @Injectable()
 export class TutoriaService {
@@ -83,8 +82,8 @@ export class TutoriaService {
     return this.tutoriaRepo.remove(tutoria);
   }
 
-   async getAllPeriodos() {
-    return this.periodoRepo.find();  
+  async getAllPeriodos() {
+    return this.periodoRepo.find();
   }
 
   async getTutoriasPorPeriodo(periodoId: number) {
@@ -100,5 +99,54 @@ export class TutoriaService {
       where: { periodo }, // Filtra las tutorías por el periodo
       relations: ['carreras', 'tutores'], // Asegúrate de incluir relaciones
     });
+  }
+
+  async getTutoriasPorPeriodoYSede(
+    periodoId: number,
+    sede: string,
+  ): Promise<Tutoria[]> {
+    return this.tutoriaRepo
+      .createQueryBuilder('tutoria')
+      .distinct(true)
+      .leftJoinAndSelect('tutoria.periodo', 'periodo')
+      .leftJoinAndSelect('tutoria.carreras', 'carrera')
+      .where('periodo.peri_id = :periodoId', { periodoId })
+      .andWhere('carrera.sede = :sede', { sede })
+      .getMany();
+  }
+
+  async getTutoresFiltrados(
+    periodoId: number,
+    sede: string,
+    tutoriaId: number,
+    carreraId?: number,
+  ) {
+    const query = this.tutoriaRepo
+      .createQueryBuilder('tutoria')
+      .leftJoin('tutoria.tutores', 'persona')
+      .leftJoin('tutoria.periodo', 'periodo')
+      .leftJoin('persona.carreras', 'cdp')
+      .leftJoin('cdp.carrera', 'carrera')
+      .leftJoin('carrera.facultad', 'facultad')
+      .where('tutoria.id = :tutoriaId', { tutoriaId })
+      .andWhere('periodo.peri_id = :periodoId', { periodoId })
+      .andWhere('carrera.sede = :sede', { sede });
+
+    if (carreraId) {
+      query.andWhere('carrera.id = :carreraId', { carreraId });
+    }
+
+    return query
+      .select([
+        'tutoria.id AS tut_id',
+        'carrera.sede AS sede',
+        'facultad.descripcion AS facultad',
+        'persona.nombre AS nombre',
+        'persona.rut AS rut',
+        'persona.correo AS email',
+        'persona.celular AS celular',
+        'carrera.nombre AS carrera_tutor',
+      ])
+      .getRawMany();
   }
 }
