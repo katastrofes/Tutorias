@@ -131,16 +131,20 @@ export class TutoriaService {
   ) {
     const query = this.tutoriaRepo
       .createQueryBuilder('tutoria')
-      // carreras asociadas a la tutoria (para nombre de la tutoría, sede y facultades)
+      // carreras asociadas a la tutoria
       .leftJoin('tutoria.carreras', 'tutCarr')
       .leftJoin('tutCarr.facultad', 'tutCarrFac')
       // tutores
       .leftJoin('tutoria.tutores', 'persona')
-      // carreras de la persona (carrera del tutor)
+      // carreras del tutor
       .leftJoin('persona.carreras', 'cdp')
       .leftJoin('cdp.carrera', 'carreraPersona')
       .leftJoin('carreraPersona.facultad', 'facPersonaFac')
+      // periodo
       .leftJoin('tutoria.periodo', 'periodo')
+      // ✅ Sesiones creadas por ese tutor en esa tutoria
+      .leftJoin('tutoria.sesiones', 'spt', 'spt.tutor = persona.per_id')
+
       .where('tutoria.id = :tutoriaId', { tutoriaId })
       .andWhere('periodo.peri_id = :periodoId', { periodoId });
 
@@ -159,6 +163,8 @@ export class TutoriaService {
         'persona.correo AS email',
         'persona.celular AS celular',
         "GROUP_CONCAT(DISTINCT carreraPersona.nombre SEPARATOR ' / ') AS carreraTutor",
+
+        'COUNT(DISTINCT spt.id) AS sesionesCreadas',
       ])
       .groupBy('persona.per_id')
       .addGroupBy('tutoria.id')
@@ -166,44 +172,68 @@ export class TutoriaService {
   }
 
   async getTutoradosFiltrados(
-  periodoId: number,
-  tutoriaId: number,
-  carreraId?: number,
-) {
-  const query = this.tutoriaRepo
-    .createQueryBuilder('tutoria')
-    .leftJoin('tutoria.tutorados', 'persona')
-    .leftJoin('persona.carreras', 'cdp')
-    .leftJoin('cdp.carrera', 'carrera')
-    .leftJoin('tutoria.periodo', 'periodo')
-    .leftJoin('tutoria.sesiones', 'spt')
-    .leftJoin(
-      'asistencia',
-      'asistencia',
-      'asistencia.sesionPorTutor = spt.id AND asistencia.persona = persona.per_id AND asistencia.estado = :estado',
-      { estado: 'presente' }
-    )
-    .where('tutoria.id = :tutoriaId', { tutoriaId })
-    .andWhere('periodo.peri_id = :periodoId', { periodoId });
+    periodoId: number,
+    tutoriaId: number,
+    carreraId?: number,
+  ) {
+    const query = this.tutoriaRepo
+      .createQueryBuilder('tutoria')
+      .leftJoin('tutoria.tutorados', 'persona')
+      .leftJoin('persona.carreras', 'cdp')
+      .leftJoin('cdp.carrera', 'carrera')
+      .leftJoin('tutoria.periodo', 'periodo')
+      .leftJoin('tutoria.sesiones', 'spt')
+      .leftJoin(
+        'asistencia',
+        'asistencia',
+        'asistencia.sesionPorTutor = spt.id AND asistencia.persona = persona.per_id AND asistencia.estado = :estado',
+        { estado: 'presente' },
+      )
+      .where('tutoria.id = :tutoriaId', { tutoriaId })
+      .andWhere('periodo.peri_id = :periodoId', { periodoId });
 
-  if (carreraId) {
-    query.andWhere('carrera.id = :carreraId', { carreraId });
+    if (carreraId) {
+      query.andWhere('carrera.id = :carreraId', { carreraId });
+    }
+
+    return query
+      .select([
+        'tutoria.id AS tutoriaId',
+        "GROUP_CONCAT(DISTINCT carrera.nombre SEPARATOR ' / ') AS nombreTutoria",
+        'persona.rut AS rut',
+        'persona.nombre AS nombre',
+        'persona.correo AS email',
+        'persona.celular AS celular',
+        "GROUP_CONCAT(DISTINCT carrera.nombre SEPARATOR ' / ') AS carreraTutorado",
+        'COUNT(DISTINCT asistencia.id) AS clasesAsistidas',
+      ])
+      .groupBy('persona.per_id')
+      .addGroupBy('tutoria.id')
+      .getRawMany();
   }
 
-  return query
-    .select([
-      'tutoria.id AS tutoriaId',
-      "GROUP_CONCAT(DISTINCT carrera.nombre SEPARATOR ' / ') AS nombreTutoria",
-      'persona.rut AS rut',
-      'persona.nombre AS nombre',
-      'persona.correo AS email',
-      'persona.celular AS celular',
-      "GROUP_CONCAT(DISTINCT carrera.nombre SEPARATOR ' / ') AS carreraTutorado",
-      'COUNT(DISTINCT asistencia.id) AS clasesAsistidas',
-    ])
-    .groupBy('persona.per_id')
-    .addGroupBy('tutoria.id')
-    .getRawMany();
-}
-
+  async getSesionesFiltradas(periodoId: number, tutoriaId: number) {
+    return this.tutoriaRepo
+      .createQueryBuilder('tutoria')
+      .leftJoin('tutoria.periodo', 'periodo')
+      .innerJoin('tutoria.sesiones', 'spt')
+      .leftJoin('spt.sesion', 'sesion')
+      .leftJoin('spt.asistencias', 'asistencia')
+      .leftJoin('spt.tutor', 'tutor')
+      .where('tutoria.id = :tutoriaId', { tutoriaId })
+      .andWhere('periodo.peri_id = :periodoId', { periodoId })
+      .select([
+        'tutoria.id AS tutId',
+        'spt.id AS sesionId',
+        'sesion.nombre AS nroSesion',
+        "GROUP_CONCAT(DISTINCT tutor.nombre SEPARATOR ' / ') AS tutor", 
+        'spt.fecha AS fecha',
+        'spt.observaciones AS observacion',
+        'spt.lugar AS lugar',
+        "COUNT(CASE WHEN asistencia.estado = 'presente' THEN 1 END) AS asistencia",
+        'COUNT(asistencia.id) AS totalAsistencia',
+      ])
+      .groupBy('spt.id')
+      .getRawMany();
+  }
 }

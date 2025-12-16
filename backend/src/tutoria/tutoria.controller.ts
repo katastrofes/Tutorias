@@ -62,4 +62,12 @@ export class TutoriaController {
     return this.service.getTutoradosFiltrados(+periodoId, +tutoriaId);
   }
 
+  @Get('sesiones')
+  getSesionesFiltradas(
+    @Query('periodoId') periodoId: number,
+    @Query('tutoriaId') tutoriaId: number,
+  ) {
+    return this.service.getSesionesFiltradas(+periodoId, +tutoriaId);
+  }
+
 }

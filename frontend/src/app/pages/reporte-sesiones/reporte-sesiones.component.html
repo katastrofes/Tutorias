@@ -71,17 +71,18 @@
             {{ order.tutor }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.fecha }}
+            {{ order.fecha || 'Sin registro'  }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.lugar }}
+            {{ order.lugar || 'Sin registro'  }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.observacion }}
+            {{ order.observacion || 'Sin registro'  }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.asistencia }}
+            {{ order.asistencia }} / {{ order.totalAsistencia }}
           </td>
+
         </tr>
         }
       </tbody>
