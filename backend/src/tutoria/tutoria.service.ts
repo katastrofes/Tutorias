@@ -226,7 +226,7 @@ export class TutoriaService {
         'tutoria.id AS tutId',
         'spt.id AS sesionId',
         'sesion.nombre AS nroSesion',
-        "GROUP_CONCAT(DISTINCT tutor.nombre SEPARATOR ' / ') AS tutor", 
+        "GROUP_CONCAT(DISTINCT tutor.nombre SEPARATOR ' / ') AS tutor",
         'spt.fecha AS fecha',
         'spt.observaciones AS observacion',
         'spt.lugar AS lugar',
@@ -235,5 +235,62 @@ export class TutoriaService {
       ])
       .groupBy('spt.id')
       .getRawMany();
+  }
+
+  async getResumenTutoria(periodoId: number, tutoriaId: number) {
+    // 1. CORRECCIÓN: Iniciar sin alias y usar FROM
+    const subSesionesPorTutor = this.tutoriaRepo
+      .createQueryBuilder()
+      .from('sesion_por_tutor', 'spt2')
+      .select('COUNT(*)')
+      .where('spt2.tutoria_id = :tutoriaId', { tutoriaId });
+
+    // 2. CORRECCIÓN: Iniciar sin alias y usar FROM
+    const subSesionesCronograma = this.tutoriaRepo
+      .createQueryBuilder()
+      .from('sesion', 's')
+      .select('COUNT(*)')
+      .where('s.periodoPeriId = :periodoId', { periodoId });
+
+    // 3. CORRECTO: Esta subconsulta ya estaba arreglada
+    const subSesionesRealizadas = this.tutoriaRepo
+      .createQueryBuilder()
+      .from('sesion_por_tutor', 'spt3')
+      .select('COUNT(DISTINCT spt3.spt_id)')
+      .innerJoin(
+        'asistencia',
+        'a',
+        'a.spt_id = spt3.spt_id AND a.estado = "presente"',
+      )
+      .where('spt3.tutoria_id = :tutoriaId', { tutoriaId });
+
+    // Consulta principal
+    const result = await this.tutoriaRepo
+      .createQueryBuilder('tutoria')
+      .leftJoin('tutoria.periodo', 'periodo')
+      .leftJoin('tutoria.carreras', 'carrera')
+      .leftJoin('tutoria.tutores', 'tutor')
+      .leftJoin('tutoria.tutorados', 'tutorado')
+      .leftJoin('tutoria.sesiones', 'spt')
+      .leftJoin('spt.asistencias', 'asistencia')
+      .leftJoin('spt.sesion', 'sesion')
+      .where('tutoria.id = :tutoriaId', { tutoriaId })
+      .andWhere('periodo.peri_id = :periodoId', { periodoId })
+      .select([
+        'tutoria.id AS tutoriaId',
+        "GROUP_CONCAT(DISTINCT carrera.sede SEPARATOR ' / ') AS sede",
+        "GROUP_CONCAT(DISTINCT carrera.nombre SEPARATOR ' / ') AS nombreTutoria",
+        "GROUP_CONCAT(DISTINCT tutor.nombre SEPARATOR ' / ') AS tutores",
+        'COUNT(DISTINCT tutorado.per_id) AS tutorados',
+        'COUNT(DISTINCT carrera.id) AS carrerasAsociadas',
+        `(${subSesionesCronograma.getQuery()}) AS sesionesCronograma`,
+        'COUNT(DISTINCT spt.id) AS totalSesiones',
+        `(${subSesionesRealizadas.getQuery()}) AS totalSesionesRealizadas`,
+      ])
+      .setParameters({ tutoriaId, periodoId })
+      .groupBy('tutoria.id')
+      .getRawOne();
+
+    return result;
   }
 }

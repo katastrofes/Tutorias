@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PageBreadcrumbComponent } from '../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { LabelComponent } from '../../shared/components/form/label/label.component';
-import { SelectComponent } from '../../shared/components/form/select/select.component';
-import { CommonModule } from '@angular/common';
+import { SelectComponent, Option } from '../../shared/components/form/select/select.component';
+import { TutoriaService } from '../../shared/services/tutoria.service';
 
 interface TableData {
-  id: number | undefined;
   sede: string;
-  tutoriaId: string;
+  tutoriaId: number;
   nombreTutoria: string;
-  tutores: number;
+  tutores: string;
   tutorados: number;
   carrerasAsociadas: number;
-  sessionesPorTutor: number;
-  sessionesCronograma: number;
+  sesionesPorTutor: number;
+  sesionesCronograma: number;
   totalSesiones: number;
   totalSesionesRealizadas: number;
 }
@@ -21,30 +21,20 @@ interface TableData {
 @Component({
   selector: 'app-reporte-tutorias',
   templateUrl: './reporte-tutorias.component.html',
+  standalone: true,
   imports: [
+    CommonModule,
     PageBreadcrumbComponent,
     LabelComponent,
     SelectComponent,
-    CommonModule,
   ],
-  styles: ``
 })
 export class ReporteTutoriasComponent implements OnInit {
-  periodoOptions = [
-    { value: '60', label: '2025 Semestre 2' },
-    { value: '59', label: '2025 Semestre 1' },
-  ];
-  sedeOptions = [
-    { value: '1', label: 'Sede Principal' },
-    { value: '2', label: 'Sede Centro' },
-    { value: '3', label: 'Sede Sur' },
-  ];
-  tutoriaOptions = [
-    { value: '1', label: 'Matemáticas Básicas' },
-    { value: '2', label: 'Contabilidad Financiera' },
-    { value: '3', label: 'Programación Avanzada' },
-    { value: '4', label: 'Termodinámica' },
-    { value: '5', label: 'Electrónica Digital' },
+  periodoOptions: Option[] = [];
+  tutoriaOptions: Option[] = [];
+  sedeOptions: Option[] = [
+    { value: 'arica', label: 'Sede Arica' },
+    { value: 'iquique', label: 'Sede Iquique' },
   ];
 
   selectedPeriodo = '';
@@ -53,23 +43,60 @@ export class ReporteTutoriasComponent implements OnInit {
 
   tableData: TableData[] = [];
 
-  constructor() { }
+  constructor(private tutoriaService: TutoriaService) {}
 
   ngOnInit() {
+    this.tutoriaService.getPeriodos().subscribe((periodos) => {
+      this.periodoOptions = periodos.map((p) => ({
+        value: String(p.peri_id),
+        label: `${p.año} Semestre ${p.semestre}`,
+      }));
+    });
   }
 
   handlePeriodoChange(value: string) {
     this.selectedPeriodo = value;
-    console.log('Periodo seleccionado:', value);
+    this.selectedTutoria = '';
+    this.tableData = [];
+    this.tryCargarTutorias();
   }
 
   handleSedeChange(value: string) {
     this.selectedSede = value;
-    console.log('Sede seleccionada:', value);
+    this.selectedTutoria = '';
+    this.tableData = [];
+    this.tryCargarTutorias();
   }
 
   handleTutoriaChange(value: string) {
     this.selectedTutoria = value;
-    console.log('Tutoría seleccionada:', value);
+    this.tableData = [];
+
+    if (this.selectedPeriodo && this.selectedTutoria) {
+      this.cargarResumen();
+    }
+  }
+
+  tryCargarTutorias() {
+    this.tutoriaOptions = [];
+
+    if (this.selectedPeriodo) {
+      this.tutoriaService
+        .getTutoriasPorPeriodo(+this.selectedPeriodo)
+        .subscribe((tutorias) => {
+          this.tutoriaOptions = tutorias.map((t) => ({
+            value: String(t.id),
+            label: t.carreras.map((c) => c.nombre).join(' / '),
+          }));
+        });
+    }
+  }
+
+  cargarResumen() {
+    this.tutoriaService
+      .getResumenTutoria(+this.selectedPeriodo, +this.selectedTutoria)
+      .subscribe((data) => {
+        this.tableData = data ? [data] : [];
+      });
   }
 }

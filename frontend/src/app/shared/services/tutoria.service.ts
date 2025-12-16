@@ -99,4 +99,10 @@ export class TutoriaService {
       `http://localhost:3000/tutoria/sesiones?periodoId=${periodoId}&tutoriaId=${tutoriaId}`
     );
   }
+
+  getResumenTutoria(periodoId: number, tutoriaId: number) {
+    return this.http.get<any>(
+      `http://localhost:3000/tutoria/reporte/resumen-tutoria?periodoId=${periodoId}&tutoriaId=${tutoriaId}`
+    );
+  }
 }

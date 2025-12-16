@@ -57,10 +57,6 @@ export class ReporteTutoresComponent implements OnInit {
     });
   }
 
-  // ======================
-  // HANDLERS DE FILTROS
-  // ======================
-
   handlePeriodoChange(value: string) {
     this.selectedPeriodo = value;
     this.resetTabla();
@@ -81,10 +77,6 @@ export class ReporteTutoresComponent implements OnInit {
       this.cargarTutores();
     }
   }
-
-  // ======================
-  // CARGA DE DATOS
-  // ======================
 
   tryCargarTutorias() {
     this.tutoriaOptions = [];
@@ -126,10 +118,6 @@ export class ReporteTutoresComponent implements OnInit {
         console.log("Tutores filtrados:", this.tableData);
       });
   }
-
-  // ======================
-  // UTILIDADES
-  // ======================
 
   resetTabla() {
     this.tableData = [];

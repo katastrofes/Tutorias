@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Tutoria } from './tutoria.entity';
+import { Sesion } from 'src/sesion/entities/sesion.entity';
 
 @Entity()
 export class Periodo {
@@ -14,4 +15,7 @@ export class Periodo {
 
   @OneToMany(() => Tutoria, (t) => t.periodo)
   tutorias: Tutoria[];
+
+  @OneToMany(() => Sesion, (sesion) => sesion.periodo)
+  sesiones: Sesion[];
 }
