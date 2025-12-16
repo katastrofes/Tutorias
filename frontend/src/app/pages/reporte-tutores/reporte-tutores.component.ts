@@ -34,7 +34,7 @@ interface TableData {
 })
 export class ReporteTutoresComponent implements OnInit {
   periodoOptions: Option[] = [];
-  sedeOptions = [
+  sedeOptions: Option[] = [
     { value: "arica", label: "Sede Arica" },
     { value: "iquique", label: "Sede Iquique" },
   ];
@@ -57,67 +57,81 @@ export class ReporteTutoresComponent implements OnInit {
     });
   }
 
+  // ======================
+  // HANDLERS DE FILTROS
+  // ======================
+
   handlePeriodoChange(value: string) {
     this.selectedPeriodo = value;
+    this.resetTabla();
     this.tryCargarTutorias();
   }
 
   handleSedeChange(value: string) {
     this.selectedSede = value;
+    this.resetTabla();
     this.tryCargarTutorias();
   }
 
   handleTutoriaChange(value: string) {
     this.selectedTutoria = value;
+    this.resetTabla();
+
     if (this.selectedPeriodo && this.selectedSede && this.selectedTutoria) {
+      this.cargarTutores();
+    }
+  }
+
+  // ======================
+  // CARGA DE DATOS
+  // ======================
+
+  tryCargarTutorias() {
+    this.tutoriaOptions = [];
+    this.selectedTutoria = "";
+
+    if (this.selectedPeriodo && this.selectedSede) {
+      this.tutoriaService
+        .getTutoriasPorPeriodoYSede(
+          +this.selectedPeriodo,
+          this.selectedSede
+        )
+        .subscribe((tutorias) => {
+          this.tutoriaOptions = tutorias.map((t) => {
+            const nombreCarreras = t.carreras
+              .map((c) => c.nombre)
+              .join(" / ");
+
+            return {
+              value: String(t.id),
+              label: nombreCarreras || `Tutoría ${t.id}`,
+            };
+          });
+        });
+    }
+  }
+
+  cargarTutores() {
     this.tutoriaService
       .getTutoresFiltrados(
         +this.selectedPeriodo,
-        this.selectedSede,
         +this.selectedTutoria
       )
       .subscribe((data) => {
-        this.tableData = data;
-        console.log('Tutores filtrados automáticamente:', data);
-      });
-    }
-  }
+        this.tableData = data.map((row: any) => ({
+          ...row,
+          sesionesCreadas: row.sesionesCreadas ?? 0,
+        }));
 
-  tryCargarTutorias() {
-  this.tutoriaOptions = [];
-  this.selectedTutoria = "";
-  if (this.selectedPeriodo && this.selectedSede) {
-    this.tutoriaService
-      .getTutoriasPorPeriodoYSede(+this.selectedPeriodo, this.selectedSede)
-      .subscribe((tutorias) => {
-        this.tutoriaOptions = tutorias.map((t) => {
-          const nombreCarreras = t.carreras
-            .map((c) => c.nombre)
-            .join(' / ');
-          return {
-            value: String(t.id),
-            label: nombreCarreras || `Tutoría ${t.id}`,
-          };
-        });
+        console.log("Tutores filtrados:", this.tableData);
       });
   }
-  }
 
-  buscarTutores() {
-    if (this.selectedPeriodo && this.selectedSede && this.selectedTutoria) {
-      this.tutoriaService
-        .getTutoresFiltrados(
-          +this.selectedPeriodo,
-          this.selectedSede,
-          +this.selectedTutoria,
-          undefined // carreraId ya no se usa
-        )
-        .subscribe((data) => {
-          this.tableData = data;
-          console.log("Tutores filtrados:", data);
-        });
-    } else {
-      console.warn("Faltan filtros obligatorios");
-    }
+  // ======================
+  // UTILIDADES
+  // ======================
+
+  resetTabla() {
+    this.tableData = [];
   }
 }

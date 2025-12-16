@@ -23,7 +23,7 @@ import { SesionportutorModule } from './sesionportutor/sesionportutor.module';
         database: config.get<string>('DB_NAME', 'tutorias_db'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
       }),
     }),
 

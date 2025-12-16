@@ -49,15 +49,8 @@ export class TutoriaController {
   @Get('tutores')
   async getTutoresFiltrados(
     @Query('periodoId') periodoId: number,
-    @Query('sede') sede: string,
     @Query('tutoriaId') tutoriaId: number,
-    @Query('carreraId') carreraId: number,
   ) {
-    return this.service.getTutoresFiltrados(
-      periodoId,
-      sede,
-      tutoriaId,
-      carreraId,
-    );
+    return this.service.getTutoresFiltrados(periodoId, tutoriaId);
   }
 }

@@ -117,36 +117,42 @@ export class TutoriaService {
 
   async getTutoresFiltrados(
     periodoId: number,
-    sede: string,
     tutoriaId: number,
     carreraId?: number,
   ) {
     const query = this.tutoriaRepo
       .createQueryBuilder('tutoria')
+      // carreras asociadas a la tutoria (para nombre de la tutoría, sede y facultades)
+      .leftJoin('tutoria.carreras', 'tutCarr')
+      .leftJoin('tutCarr.facultad', 'tutCarrFac')
+      // tutores
       .leftJoin('tutoria.tutores', 'persona')
-      .leftJoin('tutoria.periodo', 'periodo')
+      // carreras de la persona (carrera del tutor)
       .leftJoin('persona.carreras', 'cdp')
-      .leftJoin('cdp.carrera', 'carrera')
-      .leftJoin('carrera.facultad', 'facultad')
+      .leftJoin('cdp.carrera', 'carreraPersona')
+      .leftJoin('carreraPersona.facultad', 'facPersonaFac')
+      .leftJoin('tutoria.periodo', 'periodo')
       .where('tutoria.id = :tutoriaId', { tutoriaId })
-      .andWhere('periodo.peri_id = :periodoId', { periodoId })
-      .andWhere('carrera.sede = :sede', { sede });
+      .andWhere('periodo.peri_id = :periodoId', { periodoId });
 
     if (carreraId) {
-      query.andWhere('carrera.id = :carreraId', { carreraId });
+      query.andWhere('carreraPersona.id = :carreraId', { carreraId });
     }
 
     return query
       .select([
-        'tutoria.id AS tut_id',
-        'carrera.sede AS sede',
-        'facultad.descripcion AS facultad',
+        'tutoria.id AS tutId',
+        "GROUP_CONCAT(DISTINCT tutCarr.sede SEPARATOR ' / ') AS sede",
+        "GROUP_CONCAT(DISTINCT tutCarrFac.descripcion SEPARATOR ' / ') AS facultad",
+        "GROUP_CONCAT(DISTINCT tutCarr.nombre SEPARATOR ' / ') AS nombreTutoria",
         'persona.nombre AS nombre',
         'persona.rut AS rut',
         'persona.correo AS email',
         'persona.celular AS celular',
-        'carrera.nombre AS carrera_tutor',
+        "GROUP_CONCAT(DISTINCT carreraPersona.nombre SEPARATOR ' / ') AS carreraTutor",
       ])
+      .groupBy('persona.per_id')
+      .addGroupBy('tutoria.id')
       .getRawMany();
   }
 }
