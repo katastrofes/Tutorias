@@ -24,6 +24,11 @@ import { GestionTutoriasComponent } from './pages/gestion-tutorias/gestion-tutor
 import { GestionSesionesComponent } from './pages/gestion-sesiones/gestion-sesiones.component';
 import { ReporteSesionesComponent } from './pages/reporte-sesiones/reporte-sesiones.component';
 import { ReporteTutoriasComponent } from './pages/reporte-tutorias/reporte-tutorias.component';
+import { DetalleComponent } from './shared/components/intranet/detalle/detalle.component';
+import { TutoradosComponent } from './shared/components/intranet/tutorados/tutorados.component';
+import { RecursosComponent } from './shared/components/intranet/recursos/recursos.component';
+import { IntranetLayoutComponent } from './shared/components/intranet/intranet-layout/intranet-layout.component';
+import { ListaSesionesComponent } from './shared/components/intranet/sesiones/lista-sesiones/lista-sesiones.component';
 
 export const routes: Routes = [
   {
@@ -116,6 +121,23 @@ export const routes: Routes = [
         path:'videos',
         component:VideosComponent,
       },
+    ]
+  },
+
+  {
+    path: 'intranet',
+    component: IntranetLayoutComponent,
+    children: [
+      {
+        path: 'tutor/:anio/:semestre/:tutId/:perCodigo',
+        component: DetalleComponent,
+        children: [
+          { path: '', redirectTo: 'sesiones', pathMatch: 'full' },
+          { path: 'sesiones', component: ListaSesionesComponent},
+          { path: 'tutorados', component: TutoradosComponent },
+          { path: 'recursos', component: RecursosComponent },
+        ]
+      }
     ]
   },
   // auth pages

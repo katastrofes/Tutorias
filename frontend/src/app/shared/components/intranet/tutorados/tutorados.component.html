@@ -1,0 +1,75 @@
+<div class="flex flex-col w-full">
+  <div class="p-2">
+    <button
+      (click)="mensajeGeneral()"
+      class="flex items-center gap-2 px-4 py-2 border border-[#B9B9B9] rounded-full text-[#355085] font-bold hover:bg-blue-50 cursor-pointer transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+        <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 0 0-1.032-.211 50.89 50.89 0 0 0-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 0 0 2.433 3.984L7.28 21.53A.75.75 0 0 1 6 21v-4.03a48.527 48.527 0 0 1-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979Z" />
+        <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 0 0 1.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0 0 15.75 7.5Z" />
+      </svg>
+      Mensajería General
+    </button>
+  </div>
+
+  <table class="w-full divide-y divide-[#A5CBEB] border-spacing-2">
+    <thead class="bg-[#E2E8F0] sticky top-0 z-10 border-y-2 border-[#A5CBEB]">
+      <tr>
+        <th class="px-4 py-3 text-left">Nro.</th>
+        <th class="px-4 py-3 text-left">Estudiante</th>
+        <th class="px-4 py-3 text-left">RUT</th>
+        <th class="px-4 py-3 text-left">Carrera</th>
+        <th class="px-4 py-3 text-left">Email</th>
+        <th class="px-4 py-3 text-left">Teléfono</th>
+        <th class="px-4 py-3 text-left">Mensajería</th>
+        <th class="px-4 py-3 text-left">Asignaturas</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (tutorados.length > 0) {
+        @for (fila of tutorados; track fila.per_id; let i = $index) {
+          <tr
+            [ngClass]="{
+              'bg-[#F1F5F9]': i % 2 === 1,
+              'bg-white': i % 2 === 0
+            }"
+          >
+            <td class="px-4 py-3">{{ i + 1 }}</td>
+            <td class="px-4 py-3 truncate max-w-xs">{{ fila.nombre }}</td>
+            <td class="px-4 py-3 whitespace-nowrap">{{ fila.rut }}</td>
+            <td class="px-4 py-3">{{ fila.carrera }}</td>
+            <td class="px-4 py-3">{{ fila.email }}</td>
+            <td class="px-4 py-3">{{ fila.telefono }}</td>
+
+            <td class="px-4 py-3 w-20 text-center">
+              <button
+                class="flex items-center justify-center w-8 h-8 hover:opacity-70 mx-auto"
+                (click)="irMensajeria(fila); $event.stopPropagation()"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                </svg>
+              </button>
+            </td>
+
+            <td class="px-4 py-3 w-40">
+              <button
+                class="bg-[#355085] hover:bg-[#2c436f] text-white px-6 py-1.5 rounded-full text-xs"
+                (click)="verAsignaturas(fila); $event.stopPropagation()"
+              >
+                Ver Asignaturas
+              </button>
+            </td>
+          </tr>
+        }
+      } @else {
+        <tr>
+          <td colspan="8" class="py-6 px-4">
+            No hay estudiantes registrados.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
