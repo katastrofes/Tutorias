@@ -47,11 +47,15 @@ export class TutoriaService {
     const tutores = dto.tutorIds?.length
       ? await this.personaRepo.findByIds(dto.tutorIds)
       : [];
+    const tutorados = dto.tutoradoIds?.length
+      ? await this.personaRepo.findByIds(dto.tutoradoIds)
+      : [];
 
     const tutoria = this.tutoriaRepo.create({
       periodo,
       carreras,
       tutores,
+      tutorados,
     });
 
     return this.tutoriaRepo.save(tutoria);
@@ -71,6 +75,11 @@ export class TutoriaService {
     if (dto.tutorIds) {
       const tutores = await this.personaRepo.findByIds(dto.tutorIds);
       tutoria.tutores = tutores;
+    }
+
+    if (dto.tutoradoIds) {
+      const tutorados = await this.personaRepo.findByIds(dto.tutoradoIds);
+      tutoria.tutorados = tutorados;
     }
 
     return this.tutoriaRepo.save(tutoria);

@@ -35,6 +35,14 @@ export class Tutoria {
   })
   tutores: Persona[];
 
+  @ManyToMany(() => Persona, { eager: true })
+  @JoinTable({
+    name: 'tutorados_por_tutoria',
+    joinColumn: { name: 'tutoria_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'persona_id', referencedColumnName: 'per_id' },
+  })
+  tutorados: Persona[];
+
   @OneToMany(() => SesionPorTutor, (spt) => spt.tutoria)
   sesiones: SesionPorTutor[];
 }

@@ -1,7 +1,13 @@
 import { Carrera } from 'src/carrera/entities/carrera.entity';
 import { CarrerasDePersona } from 'src/carrera/entities/CarrerasDePersona.entity';
 import { Tutoria } from 'src/tutoria/entities/tutoria.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
 
 @Entity()
 export class Persona {
@@ -35,4 +41,6 @@ export class Persona {
   @ManyToMany(() => Tutoria, (tutoria) => tutoria.tutores)
   tutorias: Tutoria[];
 
+  @ManyToMany(() => Tutoria, (tutoria) => tutoria.tutorados)
+  tutoradoEn: Tutoria[];
 }
