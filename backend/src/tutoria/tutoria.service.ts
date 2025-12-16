@@ -164,4 +164,46 @@ export class TutoriaService {
       .addGroupBy('tutoria.id')
       .getRawMany();
   }
+
+  async getTutoradosFiltrados(
+  periodoId: number,
+  tutoriaId: number,
+  carreraId?: number,
+) {
+  const query = this.tutoriaRepo
+    .createQueryBuilder('tutoria')
+    .leftJoin('tutoria.tutorados', 'persona')
+    .leftJoin('persona.carreras', 'cdp')
+    .leftJoin('cdp.carrera', 'carrera')
+    .leftJoin('tutoria.periodo', 'periodo')
+    .leftJoin('tutoria.sesiones', 'spt')
+    .leftJoin(
+      'asistencia',
+      'asistencia',
+      'asistencia.sesionPorTutor = spt.id AND asistencia.persona = persona.per_id AND asistencia.estado = :estado',
+      { estado: 'presente' }
+    )
+    .where('tutoria.id = :tutoriaId', { tutoriaId })
+    .andWhere('periodo.peri_id = :periodoId', { periodoId });
+
+  if (carreraId) {
+    query.andWhere('carrera.id = :carreraId', { carreraId });
+  }
+
+  return query
+    .select([
+      'tutoria.id AS tutoriaId',
+      "GROUP_CONCAT(DISTINCT carrera.nombre SEPARATOR ' / ') AS nombreTutoria",
+      'persona.rut AS rut',
+      'persona.nombre AS nombre',
+      'persona.correo AS email',
+      'persona.celular AS celular',
+      "GROUP_CONCAT(DISTINCT carrera.nombre SEPARATOR ' / ') AS carreraTutorado",
+      'COUNT(DISTINCT asistencia.id) AS clasesAsistidas',
+    ])
+    .groupBy('persona.per_id')
+    .addGroupBy('tutoria.id')
+    .getRawMany();
+}
+
 }

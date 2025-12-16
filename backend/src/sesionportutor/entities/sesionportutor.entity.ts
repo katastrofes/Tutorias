@@ -29,6 +29,6 @@ export class SesionPorTutor {
   @JoinColumn({ name: 'sesion_id' })
   sesion: Sesion;
 
-  @OneToMany(() => Asistencia, (a) => a.sesionPorTutor)
+  @OneToMany(() => Asistencia, (asistencia) => asistencia.sesionPorTutor)
   asistencias: Asistencia[];
 }

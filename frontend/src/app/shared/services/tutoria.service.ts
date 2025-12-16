@@ -62,5 +62,14 @@ export class TutoriaService {
     );
   }
 
+  getTutoradosFiltrados(
+  periodoId: number,
+  tutoriaId: number,
+  carreraId?: number
+  ): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.apiUrl}/tutoria/tutorados?periodoId=${periodoId}&tutoriaId=${tutoriaId}&carreraId=${carreraId ?? ''}`
+    );
+  }
 
 }

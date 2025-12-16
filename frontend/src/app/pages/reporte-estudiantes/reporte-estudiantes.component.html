@@ -35,16 +35,6 @@
             className="dark:bg-dark-900"
           ></app-select>
         </div>        
-        <div>
-          <app-label>Carrera</app-label>
-          <app-select
-            [options]="carreraOptions"
-            placeholder="Selecciona una carrera"
-            [value]="selectedCarrera"
-            (valueChange)="handleCarreraChange($event)"
-            className="dark:bg-dark-900"
-          ></app-select>
-        </div>
       </div>
 </ng-content>
 <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -60,9 +50,7 @@
           <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Email</th>
           <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Celular</th>
           <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Carrera Tutorado</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Año Ingreso</th>
           <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Clases Asistidas</th>
-          <th class="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Sesiones Totales</th>
         </tr>
       </thead>
       <!-- Table Body -->
@@ -92,13 +80,7 @@
             {{ order.carreraTutorado }}
           </td>
           <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.anioIngreso }}
-          </td>
-          <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
             {{ order.clasesAsistidas }}
-          </td>
-          <td class="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-            {{ order.sesionesTotales }}
           </td>
         </tr>
         }
