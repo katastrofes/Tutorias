@@ -85,7 +85,11 @@ export class NuevaSesionComponent implements OnInit {
       tematica: [{ value: '', disabled: true }],
       autor: [{ value: this.autor, disabled: true }],
       lugar: ['', Validators.required],
+      otroLugar: [''],
+      observaciones: [''],
+      competencias: ['']
       observaciones: ['']
+
     });
   }
 
@@ -108,14 +112,24 @@ export class NuevaSesionComponent implements OnInit {
   }
 
   guardar() {
-    if (this.formSesion.invalid) return;
+    if (this.formSesion.invalid) {
+      console.error('El formulario es inválido. Por favor, complete todos los campos requeridos.');
+      return;
+    }
 
-    const raw = this.formSesion.getRawValue() as {
-      pse_id: string | number;
-      fecha: unknown;
-      hora: unknown;
-      lugar: string;
-      observaciones: string | null;
+    const { pse_id, fecha, hora, lugar, otroLugar, observaciones } = this.formSesion.value;
+    const fechaCompleta = `${fecha} ${hora}`;
+
+    const lugarFinal = lugar === 'otro' ? otroLugar : lugar;
+
+    const sesionData = {
+      perId: '1',
+      tutId: this.tutId,
+      pseId: pse_id,
+      fecha: fechaCompleta,
+      lugar: lugarFinal,
+      observaciones: observaciones || ''
+
     };
 
     const fechaYMD = this.normalizeFechaToYMD(raw.fecha);
