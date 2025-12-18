@@ -41,6 +41,7 @@ export class NuevaSesionComponent implements OnInit {
       tematica: [''],
       autor: [''],
       lugar: ['', Validators.required],
+      otroLugar: [''],
       observaciones: [''],
       competencias: ['']
     });
@@ -73,15 +74,17 @@ export class NuevaSesionComponent implements OnInit {
       return;
     }
 
-    const { pse_id, fecha, hora, lugar, observaciones } = this.formSesion.value;
+    const { pse_id, fecha, hora, lugar, otroLugar, observaciones } = this.formSesion.value;
     const fechaCompleta = `${fecha} ${hora}`;
+
+    const lugarFinal = lugar === 'otro' ? otroLugar : lugar;
 
     const sesionData = {
       perId: '1',
       tutId: this.tutId,
       pseId: pse_id,
       fecha: fechaCompleta,
-      lugar: lugar,
+      lugar: lugarFinal,
       observaciones: observaciones || ''
     };
     

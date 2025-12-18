@@ -7,26 +7,22 @@
 
     <form [formGroup]="formSesion" class="p-6 space-y-4">
 
-    <div>
-      <label class="block text-sm font-medium mb-1">Sesión</label>
-
-      <select
-        formControlName="pse_id"
-        (change)="onPlantillaSeleccionada()"
-        class="w-full border border-[#B9B9B9] rounded-md px-3 py-2
-              focus:border-[#355085] focus:ring-[#355085]"
-      >
-        <option value="" disabled selected>Seleccione una sesión</option>
-
-        @for (s of sesionesPlantilla; track s.pse_id) {
-          <option [value]="s.pse_id">
-            Sesión {{ s['nro'] || s.pse_id }}
-          </option>
-        }
-      </select>
-    </div>
-
-
+      <div>
+        <label class="block text-sm font-medium mb-1">Sesión</label>
+        <select
+          formControlName="pse_id"
+          (change)="onPlantillaSeleccionada()"
+          class="w-full border border-[#B9B9B9] rounded-md px-3 py-2
+                focus:border-[#355085] focus:ring-[#355085]"
+        >
+          <option value="" disabled selected>Seleccione una sesión</option>
+          @for (s of sesionesPlantilla; track s.pse_id) {
+            <option [value]="s.pse_id">
+              Sesión {{ s['nro'] || s.pse_id }}
+            </option>
+          }
+        </select>
+      </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -66,43 +62,45 @@
         />
       </div>
 
+      <!-- MODIFICADO: Cambiado de input a select -->
       <div>
         <label class="block text-sm font-medium mb-1">Lugar</label>
-        <input 
-          type="text"
+        <select
           formControlName="lugar"
-          class="w-full rounded-md px-3 py-2 border border-[#B9B9B9]"/>
+          class="w-full border border-[#B9B9B9] rounded-md px-3 py-2
+                focus:border-[#355085] focus:ring-[#355085]"
+        >
+          <option value="" disabled selected>Seleccione un lugar</option>
+          <option value="Biblioteca">Biblioteca</option>
+          <option value="Aulario A">Aulario A</option>
+          <option value="Aulario C">Aulario C</option>
+          <option value="Aulario D">Aulario D</option>
+          <option value="Velázquez">Velázquez</option>
+          <option value="otro">Otro</option>
+        </select>
       </div>
 
       <div *ngIf="formSesion.get('lugar')?.value === 'otro'">
-        <label class="block text-sm font-medium mb-1">Especificar lugar</label>
+        <label class="block text-sm font-medium mb-1">Lugar</label>
         <input 
           formControlName="otroLugar"
           class="w-full border border-[#B9B9B9] rounded-md px-3 py-2 focus:border-[#355085] focus:ring-[#355085]"
-          placeholder="Especificar lugar"
+          placeholder="Lugar"
         />
       </div>
 
-      <ng-template #defaultLugar></ng-template>
-
-
-
       <div>
         <label class="block text-sm font-medium mb-2">Competencias</label>
-
         <div class="flex flex-wrap gap-2">
           @if (competenciasSeleccionadas.length) {
-
             @for (comp of competenciasSeleccionadas; track comp) {
               <span class="px-3 py-1 bg-gray-200 rounded-full text-sm">
                 {{ comp }}
               </span>
             }
-
           } @else {
             <span class="text-gray-500 text-sm">No hay competencias asignadas</span>
           }
-
         </div>
       </div>
 
@@ -121,7 +119,6 @@
               (click)="cancelar()">
         Cancelar
       </button>
-
       <button 
         class="px-4 py-2 text-white rounded-md
               bg-[#355085] hover:bg-[#2c446d]
@@ -130,7 +127,6 @@
         (click)="guardar()">
         Guardar
       </button>
-
     </div>
 
   </div>
