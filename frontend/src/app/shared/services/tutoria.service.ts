@@ -1,21 +1,23 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Carrera } from '../models/carrera';
-import { Persona } from '../models/persona';
-import { Tutoria } from '../models/tutoria';
-import { Periodo } from '../models/periodo';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { Carrera } from "../models/carrera";
+import { Persona } from "../models/persona";
+import { Tutoria } from "../models/tutoria";
+import { Periodo } from "../models/periodo";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class TutoriaService {
-  private apiUrl = 'http://localhost:3000'; // ajusta si tienes proxy
+  private apiUrl = "http://localhost:3000"; // ajusta si tienes proxy
 
   constructor(private http: HttpClient) {}
 
   getTutorias(semestre: number, año: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/tutoria?semestre=${semestre}&año=${año}`);
+    return this.http.get<any[]>(
+      `${this.apiUrl}/tutoria?semestre=${semestre}&año=${año}`
+    );
   }
 
   getCarreras(): Observable<Carrera[]> {
@@ -27,14 +29,23 @@ export class TutoriaService {
   }
 
   getTutoriasPorPeriodo(periodoId: number): Observable<Tutoria[]> {
-    return this.http.get<Tutoria[]>(`${this.apiUrl}/tutoria/periodo?periodoId=${periodoId}`);
+    return this.http.get<Tutoria[]>(
+      `${this.apiUrl}/tutoria/periodo?periodoId=${periodoId}`
+    );
   }
 
-  createTutoria(data: { periodoId: number, carreraIds: number[], tutorIds?: number[] }): Observable<any> {
+  createTutoria(data: {
+    periodoId: number;
+    carreraIds: number[];
+    tutorIds?: number[];
+  }): Observable<any> {
     return this.http.post(`${this.apiUrl}/tutoria`, data);
   }
 
-  updateTutoria(id: number, data: { carreraIds?: number[], tutorIds?: number[] }): Observable<any> {
+  updateTutoria(
+    id: number,
+    data: { carreraIds?: number[]; tutorIds?: number[] }
+  ): Observable<any> {
     return this.http.put(`${this.apiUrl}/tutoria/${id}`, data);
   }
 
@@ -43,7 +54,55 @@ export class TutoriaService {
   }
 
   getPeriodos() {
-  return this.http.get<Periodo[]>(`${this.apiUrl}/tutoria/periodos`);
+    return this.http.get<Periodo[]>(`${this.apiUrl}/tutoria/periodos`);
   }
 
+  getTutoriasPorPeriodoYSede(
+    periodoId: number,
+    sede: string
+  ): Observable<Tutoria[]> {
+    return this.http.get<Tutoria[]>(
+      `${this.apiUrl}/tutoria/filtro?periodoId=${periodoId}&sede=${sede}`
+    );
+  }
+
+  getTutoresFiltrados(
+    periodoId: number,
+    tutoriaId: number,
+    carreraId?: number
+  ): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${
+        this.apiUrl
+      }/tutoria/tutores?periodoId=${periodoId}&tutoriaId=${tutoriaId}&carreraId=${
+        carreraId ?? ""
+      }`
+    );
+  }
+
+  getTutoradosFiltrados(
+    periodoId: number,
+    tutoriaId: number,
+    carreraId?: number
+  ): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${
+        this.apiUrl
+      }/tutoria/tutorados?periodoId=${periodoId}&tutoriaId=${tutoriaId}&carreraId=${
+        carreraId ?? ""
+      }`
+    );
+  }
+
+  getSesionesFiltradas(periodoId: number, tutoriaId: number) {
+    return this.http.get<any[]>(
+      `http://localhost:3000/tutoria/sesiones?periodoId=${periodoId}&tutoriaId=${tutoriaId}`
+    );
+  }
+
+  getResumenTutoria(periodoId: number, tutoriaId: number) {
+    return this.http.get<any>(
+      `http://localhost:3000/tutoria/reporte/resumen-tutoria?periodoId=${periodoId}&tutoriaId=${tutoriaId}`
+    );
+  }
 }

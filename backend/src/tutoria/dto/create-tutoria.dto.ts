@@ -13,4 +13,9 @@ export class CreateTutoriaDto {
   @IsArray()
   @IsInt({ each: true })
   tutorIds?: number[];
+
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  tutoradoIds?: number[];
 }

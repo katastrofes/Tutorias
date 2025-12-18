@@ -4,10 +4,12 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { Periodo } from './periodo.entity';
 import { Carrera } from '../../carrera/entities/carrera.entity';
-import { Persona } from '../../persona/persona.entity';
+import { Persona } from '../../persona/entities/persona.entity';
+import { SesionPorTutor } from 'src/sesionportutor/entities/sesionportutor.entity';
 
 @Entity()
 export class Tutoria {
@@ -32,4 +34,15 @@ export class Tutoria {
     inverseJoinColumn: { name: 'persona_id', referencedColumnName: 'per_id' },
   })
   tutores: Persona[];
+
+  @ManyToMany(() => Persona, { eager: true })
+  @JoinTable({
+    name: 'tutorados_por_tutoria',
+    joinColumn: { name: 'tutoria_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'persona_id', referencedColumnName: 'per_id' },
+  })
+  tutorados: Persona[];
+
+  @OneToMany(() => SesionPorTutor, (spt) => spt.tutoria)
+  sesiones: SesionPorTutor[];
 }

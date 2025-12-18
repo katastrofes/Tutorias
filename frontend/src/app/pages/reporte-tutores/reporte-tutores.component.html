@@ -35,17 +35,26 @@
             className="dark:bg-dark-900"
           ></app-select>
         </div>        
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4 border-t border-gray-100 pt-6 dark:border-white/[0.05]">
         <div>
-          <app-label>Carrera</app-label>
-          <app-select
-            [options]="carreraOptions"
-            placeholder="Selecciona una carrera"
-            [value]="selectedCarrera"
-            (valueChange)="handleCarreraChange($event)"
-            className="dark:bg-dark-900"
-          ></app-select>
+          <h3 class="text-base font-semibold text-gray-800 dark:text-white/90">
+            Resultados del Reporte
+          </h3>
+          <p class="text-sm text-gray-500">Muestra el resumen basado en los filtros seleccionados.</p>
         </div>
 
+        <button 
+          (click)="exportToPDF()"
+          [disabled]="tableData.length === 0"
+          class="group relative flex items-center justify-center gap-2 px-6 py-2.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg shadow-red-200 dark:shadow-none rounded-xl transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg class="w-5 h-5 transition-transform group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+          </svg>
+          <span class="font-semibold tracking-wide text-sm">Descargar Reporte</span>
+        </button>
       </div>
 </ng-content>
 <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">

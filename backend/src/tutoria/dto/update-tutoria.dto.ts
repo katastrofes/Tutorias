@@ -12,4 +12,9 @@ export class UpdateTutoriaDto extends PartialType(CreateTutoriaDto) {
   @IsArray()
   @IsInt({ each: true })
   tutorIds?: number[];
+
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  tutoradoIds?: number[];
 }

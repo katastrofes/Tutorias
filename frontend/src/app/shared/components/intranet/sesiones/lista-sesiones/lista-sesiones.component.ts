@@ -7,11 +7,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditarSesionComponent } from '../editar-sesion/editar-sesion.component';
 import { ActivatedRoute } from '@angular/router';
 import { AsistenciaSesionComponent } from '../asistencia-sesion/asistencia-sesion.component';
-import { IntranetService, PlantillaSesion } from '../../../../services/intranet.service';
+import { IntranetService, PlantillaSesion, SesionListado } from '../../../../services/intranet.service';
 
 export interface Sesion {
   idSesion: number;
-  nro: number;
+  nro_sesion: number;
   fecha: Date;
   tematica: string;
   autor: string;
@@ -31,12 +31,13 @@ export class ListaSesionesComponent implements OnInit{
   private _IntranetService = inject(IntranetService);
   private route = inject(ActivatedRoute);
   
-  sesiones: Sesion[] = [];
+  sesiones: SesionListado[] = [];
   filaExpandida: number | null = null;
-  perCodigo: number = 0;
+  periId: number = 0;
   tutId: number = 0;
   anioIngreso!: number;
   semestre!: number;
+  perId: number = 1;
 
   ngOnInit() {
     const anioParam = this.route.parent?.snapshot.paramMap.get('anio');
@@ -52,7 +53,7 @@ export class ListaSesionesComponent implements OnInit{
     }
 
     if (perCodigoParam) {
-      this.perCodigo = parseInt(perCodigoParam, 10);
+      this.periId = parseInt(perCodigoParam, 10);
     } else {
       console.error('Error: No se pudo obtener el parámetro periodo (perCodigo) de la URL.');
       return;
@@ -71,17 +72,20 @@ export class ListaSesionesComponent implements OnInit{
       console.error('Error: No se pudo obtener el parámetro año ingreso de la URL.');
       return;
     }
-    if (this.tutId && this.perCodigo) {
+    if (this.tutId && this.periId) {
         this.cargarSesiones();
     }
   }
 
   cargarSesiones() {
-    this._IntranetService.obtenerSesionesTutor(this.perCodigo, this.tutId).subscribe({
-        next: (sesiones: Sesion[]) => {
-            this.sesiones = sesiones;
-        }
-    });
+    this._IntranetService.obtenerSesionesTutorPeriodo(this.perId, this.periId, this.tutId)
+      .subscribe({
+        next: (resp) => {
+          console.log('RESPUESTA BACKEND listar:', resp);
+          this.sesiones = resp;
+        },
+        error: (err) => console.error('ERROR listar:', err),
+      });
   }
 
   toggleExpand(id: number) {
@@ -95,87 +99,87 @@ export class ListaSesionesComponent implements OnInit{
         this.semestre
     ).subscribe(tutorados => {
 
-        const dialogRef = this.dialog.open(AsistenciaSesionComponent, {
-            width: '60vw',
-            maxWidth: '90vw',
-            disableClose: true,
-            data: {
-                tutorados: tutorados,
-                sesion: sesion
-            }
-        });
+      const dialogRef = this.dialog.open(AsistenciaSesionComponent, {
+        width: '60vw',
+        maxWidth: '90vw',
+        disableClose: true,
+        data: {
+            tutorados: tutorados,
+            sesion: sesion
+        }
+      });
 
-        dialogRef.afterClosed().subscribe(result => {
-            console.log('Modal cerrado', result);
-        });
+      dialogRef.afterClosed().subscribe(result => {
+          console.log('Modal cerrado', result);
+      });
 
     });
   }
 
-  editar(sesion: any) {
+  editar(sesion: SesionListado) {
+    const data = {
+      idSesion: sesion.idSesion,
+      nro: sesion.nro,
+      fecha: sesion.sesFecha,
+      lugar: sesion.sesLugar,
+      observaciones: sesion.observaciones,
+      tematica: sesion.tematica,
+    };
+
+    console.log('[Padre] data enviado al modal:', data);
+
     const dialogRef = this.dialog.open(EditarSesionComponent, {
       width: '40vw',
       maxWidth: '90vw',
       disableClose: true,
-      data: {
-        idSesion: sesion.idSesion,
-        nro: sesion.nro,
-        fecha: sesion.fecha,
-        tematica: sesion.tematica,
-        autor: sesion.autor,
-        lugar: sesion.lugar,
-        competencias: sesion.competencias,
-        observaciones: sesion.observaciones
-      },
+      data,
     });
 
-    //modificar
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('[Padre] result recibido del modal:', result);
       if (!result) return;
 
-      this._IntranetService.editarSesion(
-        result.idSesion,
-        result.fecha,
-        result.lugar,
-        result.observaciones
-      ).subscribe(res => {
-          console.log("Sesión actualizada:", result);
+      const payload = {
+        perId: this.perId,
+        fechaEjecucion: result.fecha,
+        lugar: result.lugar,
+        observaciones: result.observaciones ?? null,
+      };
 
-          const i = this.sesiones.findIndex(s => s.idSesion === result.idSesion);
-          if (i !== -1) {
-              const fechaActualizada = new Date(result.fecha);
+      console.log('[Padre] payload enviado al backend (editarSesionPorTutor):', payload);
 
-              this.sesiones[i] = { 
-                  ...this.sesiones[i], 
-                  lugar: result.lugar, 
-                  observaciones: result.observaciones,
-                  fecha: fechaActualizada
-              };
-          }
+      this._IntranetService.editarSesionPorTutor(result.idSesion, payload).subscribe({
+        next: () => { this.cargarSesiones(); },
+        error: (err) => console.error('Error editando sesión:', err),
       });
     });
   }
 
+
   nuevaSesion() {
-    this._IntranetService.obtenerPlantillaSesiones(this.perCodigo, this.tutId).subscribe(
-      (plantillas: PlantillaSesion[]) => {
+    this._IntranetService.obtenerPlantillasDisponibles(this.perId, this.periId, this.tutId).subscribe({
+      next: (plantillas: PlantillaSesion[]) => {
         const dialogRef = this.dialog.open(NuevaSesionComponent, {
           width: '40vw',
           maxWidth: '90vw',
           disableClose: true,
-          data: { 
+          data: {
             sesionesPlantilla: plantillas,
-            perCodigo: this.perCodigo,
+            periId: this.periId,
             tutId: this.tutId
           }
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.cargarSesiones();
-            }
+          if (result) {
+            this.cargarSesiones();
+          }
         });
+      },
+      error: (err: unknown) => {
+        console.error('Error cargando plantillas disponibles:', err);
       }
-    );
+    });
   }
+
 }

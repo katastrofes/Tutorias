@@ -68,16 +68,9 @@ export class IntranetSidebarComponent implements OnInit {
           name: "2025 Semestre 2", 
           hasChildren: true,
           children: [
-            { name: "INGENIERIA QUÍMICA AMBIENTAL", path: "/intranet/tutor/2025/2/2/60/sesiones" }
+            { name: "INGENIERIA QUÍMICA AMBIENTAL", path: "/intranet/tutor/2025/2/1/60/sesiones" }
           ]
         },
-        { 
-          name: "2025 Semestre 1",
-          hasChildren: true,
-          children: [
-            { name: "INGENIERIA QUÍMICA AMBIENTAL", path: "/intranet/tutor/2025/1/1/59/sesiones" }
-          ]
-        }
       ]
     }
   ];

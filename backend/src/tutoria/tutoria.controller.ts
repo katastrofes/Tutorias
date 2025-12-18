@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 
 import { CreateTutoriaDto } from './dto/create-tutoria.dto';
 import { UpdateTutoriaDto } from './dto/update-tutoria.dto';
@@ -8,13 +17,16 @@ import { TutoriaService } from './tutoria.service';
 export class TutoriaController {
   constructor(private readonly service: TutoriaService) {}
 
-   @Get('periodos')  // Endpoint para obtener todos los periodos
+  @Get('periodos') // Endpoint para obtener todos los periodos
   getAllPeriodos() {
     return this.service.getAllPeriodos();
   }
 
   @Get()
-  findByPeriodo(@Query('semestre') semestre: number, @Query('año') año: number) {
+  findByPeriodo(
+    @Query('semestre') semestre: number,
+    @Query('año') año: number,
+  ) {
     return this.service.findByPeriodo(semestre, año);
   }
 
@@ -33,9 +45,49 @@ export class TutoriaController {
     return this.service.remove(id);
   }
 
-  @Get('periodo') 
+  @Get('periodo')
   getTutoriasPorPeriodo(@Query('periodoId') periodoId: number) {
     return this.service.getTutoriasPorPeriodo(periodoId);
   }
-  
+
+  @Get('filtro')
+  getTutoriasPorPeriodoYSede(
+    @Query('periodoId') periodoId: number,
+    @Query('sede') sede: string,
+  ) {
+    return this.service.getTutoriasPorPeriodoYSede(periodoId, sede);
+  }
+
+  @Get('tutores')
+  async getTutoresFiltrados(
+    @Query('periodoId') periodoId: number,
+    @Query('tutoriaId') tutoriaId: number,
+  ) {
+    return this.service.getTutoresFiltrados(periodoId, tutoriaId);
+  }
+
+  @Get('tutorados')
+  async getTutoradosFiltrados(
+    @Query('periodoId') periodoId: number,
+    @Query('tutoriaId') tutoriaId: number,
+  ) {
+    return this.service.getTutoradosFiltrados(+periodoId, +tutoriaId);
+  }
+
+  @Get('sesiones')
+  getSesionesFiltradas(
+    @Query('periodoId') periodoId: number,
+    @Query('tutoriaId') tutoriaId: number,
+  ) {
+    return this.service.getSesionesFiltradas(+periodoId, +tutoriaId);
+  }
+
+  // tutoria.controller.ts
+  @Get('reporte/resumen-tutoria')
+  getResumenTutoria(
+    @Query('periodoId') periodoId: number,
+    @Query('tutoriaId') tutoriaId: number,
+  ) {
+    return this.service.getResumenTutoria(+periodoId, +tutoriaId);
+  }
 }
