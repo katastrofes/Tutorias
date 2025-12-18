@@ -67,7 +67,7 @@ export class AsistenciaSesionComponent {
   cargarAsistenciaGuardada() {
     console.log('Cargando asistencia guardada para sesión:', this.sesId);
     
-    this._IntranetService.obtenerAsistenciaPorSesion(this.sesId)
+    this._IntranetService.obtenerAsistencia(this.sesId)
       .subscribe({
         next: (asistenciaGuardada: any[]) => {
           console.log('Asistencia guardada obtenida:', asistenciaGuardada);

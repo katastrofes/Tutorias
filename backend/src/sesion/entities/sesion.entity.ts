@@ -7,6 +7,9 @@ export class Sesion {
   @PrimaryGeneratedColumn({ name: 'ses_id' })
   id: number;
 
+  @Column({ type: 'int'})
+  nro_sesion: number;
+
   @Column({ type: 'varchar', length: 100 })
   nombre: string;
 

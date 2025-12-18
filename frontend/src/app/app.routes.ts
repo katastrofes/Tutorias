@@ -29,6 +29,7 @@ import { TutoradosComponent } from './shared/components/intranet/tutorados/tutor
 import { RecursosComponent } from './shared/components/intranet/recursos/recursos.component';
 import { IntranetLayoutComponent } from './shared/components/intranet/intranet-layout/intranet-layout.component';
 import { ListaSesionesComponent } from './shared/components/intranet/sesiones/lista-sesiones/lista-sesiones.component';
+import { AvisosComponent } from './shared/components/intranet/avisos/avisos.component';
 
 export const routes: Routes = [
   {
@@ -128,18 +129,23 @@ export const routes: Routes = [
     path: 'intranet',
     component: IntranetLayoutComponent,
     children: [
+      { path: '', redirectTo: 'avisos', pathMatch: 'full' }, // ✅ default
+      { path: 'avisos', component: AvisosComponent },        // ✅ pantalla principal
+
+      // otras rutas dentro del layout
       {
         path: 'tutor/:anio/:semestre/:tutId/:perCodigo',
         component: DetalleComponent,
         children: [
           { path: '', redirectTo: 'sesiones', pathMatch: 'full' },
-          { path: 'sesiones', component: ListaSesionesComponent},
+          { path: 'sesiones', component: ListaSesionesComponent },
           { path: 'tutorados', component: TutoradosComponent },
           { path: 'recursos', component: RecursosComponent },
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   },
+
   // auth pages
   {
     path:'signin',
