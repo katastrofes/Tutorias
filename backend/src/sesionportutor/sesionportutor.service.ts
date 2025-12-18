@@ -71,7 +71,7 @@ export class SesionportutorService {
       lugar: dto.lugar,
       tutoria,
       sesion,
-      tutor_id: dto.perId, // Agregamos el tutor_id
+      tutorId: dto.perId, // Agregamos el tutor_id
     } as Partial<SesionPorTutor>);
 
     return this.sptRepo.save(nueva);

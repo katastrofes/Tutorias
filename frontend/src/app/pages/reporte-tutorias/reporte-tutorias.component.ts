@@ -89,15 +89,25 @@ export class ReporteTutoriasComponent implements OnInit {
 
   tryCargarTutorias() {
     this.tutoriaOptions = [];
+    this.selectedTutoria = "";
 
-    if (this.selectedPeriodo) {
+    if (this.selectedPeriodo && this.selectedSede) {
       this.tutoriaService
-        .getTutoriasPorPeriodo(+this.selectedPeriodo)
+        .getTutoriasPorPeriodoYSede(
+          +this.selectedPeriodo,
+          this.selectedSede
+        )
         .subscribe((tutorias) => {
-          this.tutoriaOptions = tutorias.map((t) => ({
-            value: String(t.id),
-            label: t.carreras.map((c) => c.nombre).join(' / '),
-          }));
+          this.tutoriaOptions = tutorias.map((t) => {
+            const nombreCarreras = t.carreras
+              .map((c) => c.nombre)
+              .join(" / ");
+
+            return {
+              value: String(t.id),
+              label: nombreCarreras || `Tutoría ${t.id}`,
+            };
+          });
         });
     }
   }

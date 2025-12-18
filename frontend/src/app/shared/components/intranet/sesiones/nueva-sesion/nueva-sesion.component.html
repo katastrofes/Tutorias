@@ -13,14 +13,13 @@
         <select
           formControlName="pse_id"
           (change)="onPlantillaSeleccionada()"
-          class="w-full border border-[#B9B9B9] rounded-md px-3 py-2
-                focus:border-[#355085] focus:ring-[#355085]"
+          class="w-full border border-[#B9B9B9] rounded-md px-3 py-2 focus:border-[#355085] focus:ring-[#355085]"
         >
           <option value="" disabled selected>Seleccione una sesión</option>
+
           @for (s of sesionesPlantilla; track s.pse_id) {
             <option [value]="s.pse_id">
-              Sesión {{ s['nro'] || s.pse_id }}
-
+              Sesión {{ s.nro_sesion }}
             </option>
           }
         </select>
@@ -130,30 +129,6 @@
           <option value="Velázquez">Velázquez</option>
           <option value="otro">Otro</option>
         </select>
-      </div>
-
-      <div *ngIf="formSesion.get('lugar')?.value === 'otro'">
-        <label class="block text-sm font-medium mb-1">Lugar</label>
-        <input 
-          formControlName="otroLugar"
-          class="w-full border border-[#B9B9B9] rounded-md px-3 py-2 focus:border-[#355085] focus:ring-[#355085]"
-          placeholder="Lugar"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-2">Competencias</label>
-        <div class="flex flex-wrap gap-2">
-          @if (competenciasSeleccionadas.length) {
-            @for (comp of competenciasSeleccionadas; track comp) {
-              <span class="px-3 py-1 bg-gray-200 rounded-full text-sm">
-                {{ comp }}
-              </span>
-            }
-          } @else {
-            <span class="text-gray-500 text-sm">No hay competencias asignadas</span>
-          }
-        </div>
       </div>
 
       <div>

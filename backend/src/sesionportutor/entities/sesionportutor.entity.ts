@@ -28,6 +28,9 @@ export class SesionPorTutor {
   
   @Column({ type: 'text', nullable: true })
   observaciones: string | null;
+  
+  @Column({ name: 'tutor_id' })
+  tutorId: number;
 
   @ManyToOne(() => Tutoria, (tutoria) => tutoria.sesiones)
   @JoinColumn({ name: 'tutoria_id' })
