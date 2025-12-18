@@ -129,7 +129,7 @@ export class NuevaSesionComponent implements OnInit {
     const dto = {
       tutoriaId: this.tutId,
       sesionId: Number(raw.pse_id),
-      perId: 10,
+      perId: 1,
       fechaEjecucion,
       lugar: raw.lugar ?? '',
       observaciones: (raw.observaciones ?? '').toString().trim() || null,

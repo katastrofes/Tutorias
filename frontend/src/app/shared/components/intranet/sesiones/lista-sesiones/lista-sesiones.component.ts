@@ -37,7 +37,7 @@ export class ListaSesionesComponent implements OnInit{
   tutId: number = 0;
   anioIngreso!: number;
   semestre!: number;
-  perId: number = 10;
+  perId: number = 1;
 
   ngOnInit() {
     const anioParam = this.route.parent?.snapshot.paramMap.get('anio');

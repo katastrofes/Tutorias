@@ -43,7 +43,4 @@ export class SesionPorTutor {
   @ManyToOne(() => Persona)
   @JoinColumn({ name: 'tutor_id' })
   tutor: Persona;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  lugar: string;
 }

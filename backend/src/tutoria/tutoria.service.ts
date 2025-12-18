@@ -250,7 +250,7 @@ export class TutoriaService {
       .createQueryBuilder()
       .from('sesion', 's')
       .select('COUNT(*)')
-      .where('s.periodoPeriId = :periodoId', { periodoId });
+      .where('s.periodo_id = :periodoId', { periodoId });
 
     // 3. CORRECTO: Esta subconsulta ya estaba arreglada
     const subSesionesRealizadas = this.tutoriaRepo

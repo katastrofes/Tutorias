@@ -110,14 +110,15 @@
         <!-- Navegación inferior en desktop -->
         <div class="sticky bottom-4 z-10 hidden p-6 lg:flex">
           <div class="mx-auto flex items-center justify-center rounded-full bg-[#355085] p-2 shadow-lg">
-            <button mat-flat-button color="accent" (click)="goToPreviousStep()">
-              <span class="inline-flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-6">
+          <button 
+                (click)="goToPreviousStep()"
+                class="group flex items-center gap-2 px-6 py-2.5 rounded-full text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 active:scale-95 disabled:opacity-30"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5 transition-transform group-hover:-translate-x-1">
                   <path fill-rule="evenodd" d="M7.28 7.72a.75.75 0 0 1 0 1.06l-2.47 2.47H21a.75.75 0 0 1 0 1.5H4.81l2.47 2.47a.75.75 0 1 1-1.06 1.06l-3.75-3.75a.75.75 0 0 1 0-1.06l3.75-3.75a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
                 </svg>
-                <span class="mr-1 text-white">Atrás</span>
-              </span>
-            </button>
+                <span class="font-medium text-sm tracking-wide">Atrás</span>
+              </button>
             
             <div class="mx-2.5 flex items-center justify-center font-medium leading-5 text-white">
               <span>{{ currentStep + 1 }}</span>
@@ -125,14 +126,15 @@
               <span>{{ steps.length }}</span>
             </div>
             
-            <button mat-flat-button color="accent" (click)="goToNextStep()">
-              <span class="inline-flex items-center">
-                <span class="ml-1 text-white">Siguiente</span>
+            <button 
+                (click)="goToNextStep()"
+                class="group flex items-center gap-2 px-6 py-2.5 rounded-full text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 active:scale-95 disabled:opacity-30"
+              >
+              <span class="font-medium text-sm tracking-wide">Siguiente</span>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-6">
                     <path fill-rule="evenodd" d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                   </svg>
-              </span>
-            </button>
+              </button>
           </div>
         </div>
       </div>

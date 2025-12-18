@@ -30,11 +30,11 @@ export class SesionportutorService {
   ) {}
 
   async crear(dto: CreateSesionportutorDto) {
-    // 1) existe tutoria
+    // 1) existe tutoría
     const tutoria = await this.tutoriaRepo.findOne({ where: { id: dto.tutoriaId } });
     if (!tutoria) throw new NotFoundException('Tutoría no encontrada');
 
-    // 2) existe sesion plantilla
+    // 2) existe sesión plantilla
     const sesion = await this.sesionRepo.findOne({ where: { id: dto.sesionId } });
     if (!sesion) throw new NotFoundException('Plantilla (sesión) no encontrada');
 
@@ -51,6 +51,7 @@ export class SesionportutorService {
       throw new ForbiddenException('El tutor no pertenece a esta tutoría');
     }
 
+    // Verificar si ya existe una sesión registrada para esta tutoría y plantilla
     const yaExiste = await this.sptRepo.findOne({
       where: {
         tutoria: { id: dto.tutoriaId },
@@ -63,17 +64,19 @@ export class SesionportutorService {
       throw new ConflictException('Esta plantilla ya fue registrada para esta tutoría');
     }
 
+    // Crear la nueva sesión con el tutor_id (perId)
     const nueva = this.sptRepo.create({
       fecha: parseFechaEjecucion(dto.fechaEjecucion),
       observaciones: dto.observaciones ?? null,
       lugar: dto.lugar,
       tutoria,
       sesion,
+      tutor_id: dto.perId, // Agregamos el tutor_id
     } as Partial<SesionPorTutor>);
 
     return this.sptRepo.save(nueva);
-
   }
+
 
   async listarSesiones(perId: number, periId: number, tutoriaId: number): Promise<SesionListadoDto[]> {
     const pertenece = await this.sptRepo.manager
