@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { Asistencia } from './asistencia.entity';
 import { Persona } from 'src/persona/persona.entity';
@@ -16,11 +17,17 @@ export class SesionPorTutor {
   @PrimaryGeneratedColumn({ name: 'spt_id' })
   id: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'datetime' })
   fecha: Date;
 
+  @CreateDateColumn({ type: 'datetime', name: 'fecha_creacion' })
+  fechaCreacion: Date;
+
   @Column({ type: 'varchar', length: 200, nullable: true })
-  observaciones: string;
+  lugar: string;
+  
+  @Column({ type: 'text', nullable: true })
+  observaciones: string | null;
 
   @ManyToOne(() => Tutoria, (tutoria) => tutoria.sesiones)
   @JoinColumn({ name: 'tutoria_id' })

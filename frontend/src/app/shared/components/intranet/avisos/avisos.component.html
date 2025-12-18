@@ -1,0 +1,52 @@
+<div class="p-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    @for (c of cards; track c.id) {
+      <article class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <!-- Header celeste -->
+        <header class="bg-[#E6F1FB] px-6 py-4 flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full overflow-hidden bg-slate-200 shrink-0">
+            <img
+              *ngIf="c.avatarUrl; else noAvatar"
+              [src]="c.avatarUrl"
+              class="w-full h-full object-cover"
+              alt="avatar"
+            />
+            <ng-template #noAvatar>
+              <div class="w-full h-full flex items-center justify-center text-slate-500 text-sm">
+                ?
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="min-w-0">
+            <div class="font-semibold text-slate-900 truncate">{{ c.nombre }}</div>
+            <div class="text-sm text-slate-600 truncate">{{ c.cargo }}</div>
+            <div class="text-sm text-slate-500">Quedan {{ c.dias }} días</div>
+          </div>
+        </header>
+
+        <!-- Body -->
+        <div class="px-6 py-5">
+          <h3 class="text-2xl font-extrabold tracking-tight text-slate-900">
+            {{ c.titulo }}
+          </h3>
+
+          <p class="mt-4 text-slate-700 leading-relaxed whitespace-pre-line">
+            {{ c.descripcion }}
+          </p>
+
+          <button
+            type="button"
+            class="mt-6 inline-flex items-center gap-2 text-[#EDB01C] font-semibold hover:opacity-80"
+            (click)="abrirAdjunto(c)"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-5">
+              <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-6-6a.75.75 0 1 1 1.06-1.06L12 14.69l5.47-5.47a.75.75 0 1 1 1.06 1.06l-6 6Z" clip-rule="evenodd"/>
+            </svg>
+            {{ c.adjuntoLabel ?? 'Ver adjunto' }}
+          </button>
+        </div>
+      </article>
+    }
+  </div>
+</div>
