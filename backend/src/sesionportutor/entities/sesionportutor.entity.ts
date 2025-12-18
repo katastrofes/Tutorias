@@ -10,6 +10,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { Asistencia } from './asistencia.entity';
+import { Persona } from 'src/persona/persona.entity';
 
 @Entity()
 export class SesionPorTutor {
@@ -36,6 +37,13 @@ export class SesionPorTutor {
   @JoinColumn({ name: 'sesion_id' })
   sesion: Sesion;
 
-  @OneToMany(() => Asistencia, (a) => a.sesionPorTutor)
+  @OneToMany(() => Asistencia, (asistencia) => asistencia.sesionPorTutor)
   asistencias: Asistencia[];
+  
+  @ManyToOne(() => Persona)
+  @JoinColumn({ name: 'tutor_id' })
+  tutor: Persona;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  lugar: string;
 }

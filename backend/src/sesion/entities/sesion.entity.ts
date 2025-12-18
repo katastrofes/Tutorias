@@ -1,6 +1,13 @@
 import { SesionPorTutor } from 'src/sesionportutor/entities/sesionportutor.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-
+import { Periodo } from 'src/tutoria/entities/periodo.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Sesion {
@@ -18,4 +25,9 @@ export class Sesion {
 
   @OneToMany(() => SesionPorTutor, (spt) => spt.sesion)
   sesionesPorTutor: SesionPorTutor[];
+
+  // sesion.entity.ts
+  @ManyToOne(() => Periodo, (periodo) => periodo.sesiones)
+  @JoinColumn({ name: 'periodo_id' })
+  periodo: Periodo;
 }

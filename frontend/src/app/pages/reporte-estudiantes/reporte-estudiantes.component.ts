@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { PageBreadcrumbComponent } from '../../shared/components/common/page-breadcrumb/page-breadcrumb.component';
 import { LabelComponent } from '../../shared/components/form/label/label.component';
-import { SelectComponent } from '../../shared/components/form/select/select.component';
-import { CommonModule } from '@angular/common';
+import {
+  SelectComponent,
+  Option,
+} from '../../shared/components/form/select/select.component';
+import { TutoriaService } from '../../shared/services/tutoria.service';
 
 interface TableData {
-  id: number | undefined;
   tutoriaId: string;
   nombreTutoria: string;
   rut: string;
@@ -13,77 +16,119 @@ interface TableData {
   email: string;
   celular: string;
   carreraTutorado: string;
-  anioIngreso: number;
   clasesAsistidas: number;
-  sesionesTotales: number;
 }
 
 @Component({
   selector: 'app-reporte-estudiantes',
   templateUrl: './reporte-estudiantes.component.html',
   imports: [
-      PageBreadcrumbComponent,
-      LabelComponent,
-      SelectComponent,
-      CommonModule,
+    CommonModule,
+    PageBreadcrumbComponent,
+    LabelComponent,
+    SelectComponent,
   ],
-  styles: ``
+  styles: '',
 })
 export class ReporteEstudiantesComponent implements OnInit {
-  periodoOptions = [
-    { value: '60', label: '2025 Semestre 2' },
-    { value: '59', label: '2025 Semestre 1' },
+  // Filtros
+  periodoOptions: Option[] = [];
+  sedeOptions: Option[] = [
+    { value: 'arica', label: 'Sede Arica' },
+    { value: 'iquique', label: 'Sede Iquique' },
   ];
-  sedeOptions = [
-    { value: '1', label: 'Sede Principal' },
-    { value: '2', label: 'Sede Centro' },
-    { value: '3', label: 'Sede Sur' },
-  ];
-  carreraOptions = [
-    { value: '1', label: 'Ingeniería Civil Industrial' },
-    { value: '2', label: 'Ingeniería Comercial' },
-    { value: '3', label: 'Ingeniería en Computación' },
-    { value: '4', label: 'Ingeniería Civil Mecánica' },
-    { value: '5', label: 'Ingeniería Electrónica' },
-  ];
-  tutoriaOptions = [
-    { value: '1', label: 'Matemáticas Básicas' },
-    { value: '2', label: 'Contabilidad Financiera' },
-    { value: '3', label: 'Programación Avanzada' },
-    { value: '4', label: 'Termodinámica' },
-    { value: '5', label: 'Electrónica Digital' },
-  ];
+  tutoriaOptions: Option[] = [];
 
   selectedPeriodo = '';
   selectedSede = '';
-  selectedCarrera = '';
   selectedTutoria = '';
 
-  tableData: TableData[] = [
-  ];
+  // Tabla
+  tableData: TableData[] = [];
 
-  constructor() { }
+  constructor(private tutoriaService: TutoriaService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.tutoriaService.getPeriodos().subscribe((periodos) => {
+      this.periodoOptions = periodos.map((p) => ({
+        value: String(p.peri_id),
+        label: `${p.año} Semestre ${p.semestre}`,
+      }));
+    });
   }
+
+  // ========================
+  // HANDLERS DE FILTROS
+  // ========================
 
   handlePeriodoChange(value: string) {
     this.selectedPeriodo = value;
-    console.log('Periodo seleccionado:', value);
+    this.resetTabla();
+    this.tryCargarTutorias();
   }
 
   handleSedeChange(value: string) {
     this.selectedSede = value;
-    console.log('Sede seleccionada:', value);
-  }
-
-  handleCarreraChange(value: string) {
-    this.selectedCarrera = value;
-    console.log('Carrera seleccionada:', value);
+    this.resetTabla();
+    this.tryCargarTutorias();
   }
 
   handleTutoriaChange(value: string) {
     this.selectedTutoria = value;
-    console.log('Tutoría seleccionada:', value);
+    this.resetTabla();
+
+    if (this.selectedPeriodo && this.selectedSede && this.selectedTutoria) {
+      this.cargarEstudiantes();
+    }
+  }
+
+  // ========================
+  // CARGA DE DATOS
+  // ========================
+
+  tryCargarTutorias() {
+    this.tutoriaOptions = [];
+    this.selectedTutoria = '';
+
+    if (this.selectedPeriodo && this.selectedSede) {
+      this.tutoriaService
+        .getTutoriasPorPeriodoYSede(+this.selectedPeriodo, this.selectedSede)
+        .subscribe((tutorias) => {
+          this.tutoriaOptions = tutorias.map((t) => {
+            const nombreCarreras = t.carreras.map((c) => c.nombre).join(' / ');
+            return {
+              value: String(t.id),
+              label: nombreCarreras || `Tutoría ${t.id}`,
+            };
+          });
+        });
+    }
+  }
+
+  cargarEstudiantes() {
+    this.tutoriaService
+      .getTutoradosFiltrados(+this.selectedPeriodo, +this.selectedTutoria)
+      .subscribe((data) => {
+        this.tableData = data.map((row: any) => ({
+          tutoriaId: row.tutoriaId,
+          nombreTutoria: row.nombreTutoria,
+          rut: row.rut,
+          nombre: row.nombre,
+          email: row.email,
+          celular: row.celular,
+          carreraTutorado: row.carreraTutorado,
+          clasesAsistidas: row.clasesAsistidas ?? 0,
+        }));
+
+        console.log('Estudiantes filtrados:', this.tableData);
+      });
+  }
+
+  // ========================
+  // UTILIDAD
+  // ========================
+
+  resetTabla() {
+    this.tableData = [];
   }
 }
